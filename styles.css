@@ -1,0 +1,3072 @@
+:root {
+  --bg: #fff;
+  --text: #000;
+  --card-bg: #F6F5F3;
+  --ink: #1a1a1a;
+  --bone: #EBEBDC;
+  --green: #28694B;
+  --green-dark: #1f5039;
+  /* Moss green from the alphabet's leaves, for its order buttons. */
+  --forest: #34502F;
+  /* Grey darkened to reach 4.5:1 on bone. */
+  --grey-text: #5C5C61;
+  --soft-white: rgba(255, 255, 255, 0.7);
+
+  /* Name and project pages. Big Caslon ships with macOS; Libre Caslon Display is the web fallback. */
+  --font-caslon: "Big Caslon", "Libre Caslon Display", Georgia, serif;
+  --font-body: "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --gutter: 16px;
+  --gap: 14px;
+  --card-radius: 18px;
+  --col-w: clamp(200px, 29vw, 420px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+  padding: 48px var(--gutter) 0;
+  text-align: center;
+}
+
+/* fit-content so the page transition morphs the text box, not a full-width row. */
+.name {
+  width: fit-content;
+  margin: 0 auto;
+  font-family: var(--font-caslon);
+  font-weight: 400;
+  font-size: clamp(38px, 6vw, 54px);
+  line-height: 1.1;
+  view-transition-name: site-name;
+}
+a.name {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------- Page transition ----------
+   Moving between pages, the name glides from the big centered header to the
+   compact project header (and back) while everything else cross-fades. */
+
+@view-transition { navigation: auto; }
+
+::view-transition-group(site-name) {
+  animation-duration: 0.7s;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 0.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+
+/* ---------- Intro ----------
+   main.js steps html through: .intro → --name → --ball → --line.
+   During --line the line stretch and the page fade share duration and easing,
+   so the page reaches full opacity exactly when the line reaches full width. */
+
+.intro {
+  --line-dur: 1.2s;
+  --line-ease: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.intro body { overflow: hidden; }
+
+.intro .name { opacity: 0; }
+.intro--name .name {
+  opacity: 1;
+  transition: opacity 0.9s ease;
+}
+
+/* Line starts as one ball (both end dots stacked at width 0), then stretches out. */
+.intro .site-header .rule { width: 0; }
+.intro .site-header .rule::before,
+.intro .site-header .rule::after { scale: 0; }
+.intro--ball .site-header .rule::before,
+.intro--ball .site-header .rule::after {
+  scale: 2.5;
+  transition: scale 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.intro--line .site-header .rule {
+  width: var(--rule-w);
+  transition: width var(--line-dur) var(--line-ease);
+}
+.intro--line .site-header .rule::before,
+.intro--line .site-header .rule::after {
+  scale: 1;
+  transition: scale var(--line-dur) var(--line-ease);
+}
+
+/* The role and menu open up from the center in lockstep with the line: a
+   clip that widens outward, with a quick fade so the edges stay soft. The
+   rest of the page (the card wall and below) fades in alongside. */
+.intro .role,
+.intro .nav {
+  opacity: 0;
+  clip-path: inset(0 50%);
+}
+.intro--line .role,
+.intro--line .nav {
+  opacity: 1;
+  clip-path: inset(0 0);
+  transition:
+    clip-path var(--line-dur) var(--line-ease),
+    opacity calc(var(--line-dur) * 0.6) ease;
+}
+.intro main { opacity: 0; }
+.intro--line main {
+  opacity: 1;
+  transition: opacity var(--line-dur) var(--line-ease);
+}
+
+.role {
+  margin: 8px 0 22px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.role-dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin: 0 10px;
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: middle;
+}
+
+/* Thin line with a small dot at each end */
+.rule {
+  --rule-w: min(600px, calc(100% - 2 * var(--gutter)));
+  position: relative;
+  width: var(--rule-w);
+  height: 1px;
+  margin: 0 auto;
+  background: var(--text);
+}
+.rule::before,
+.rule::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text);
+  /* translate (not transform) so the intro scale grows the dot around its center. */
+  translate: 0 -50%;
+}
+.rule::before { left: -2px; }
+.rule::after { right: -2px; }
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 44px;
+  padding: 22px 0 40px;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.nav a {
+  color: inherit;
+  text-decoration: none;
+  padding: 2px 0;
+  border-bottom: 1px solid transparent;
+}
+.nav a:hover { border-bottom-color: var(--text); }
+/* Narrow phones, where the four links no longer fit on one line: A som i
+   alfabetet on its own line, after the other links. */
+@media (max-width: 509px) { .nav a[href$="alfabetet.html"] { order: 1; } }
+
+/* ---------- Anchors (placeholder sections) ---------- */
+
+.anchor { height: 0; scroll-margin-top: 16px; }
+.wall { scroll-margin-top: 16px; }
+
+/* ---------- Card wall ---------- */
+
+.wall {
+  /* Columns are two cards tall (at most 2.61 × the column width, plus the
+     gap), so this width makes both rows fit between the wall's top
+     (--wall-top, set by main.js) and the bottom of the first screen, but
+     never narrower than 190px (on short windows the lower row then dips
+     just below the fold). */
+  --wall-space-below: 24px;
+  --col-w: clamp(min(190px, 29vw),
+    min(29vw, (100svh - var(--wall-top, 260px) - var(--wall-space-below) - var(--gap)) / 2.61),
+    420px);
+  width: 100%;
+  overflow: hidden;
+  /* White side margins; main.js fits the columns between them. */
+  padding-inline: clamp(var(--gutter), 4vw, 64px);
+}
+
+.wall-track {
+  display: flex;
+  width: max-content;
+}
+
+/* Projects view (main.js): a still list, one wide card per project. The
+   image fills the card's left part, cropped at the top and bottom where it
+   doesn't fit; title, subtitle and description beside it. */
+.wall.is-list .wall-track { display: block; width: auto; }
+.project-list {
+  display: grid;
+  gap: clamp(16px, 2.6vw, 44px);
+}
+.list-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 4vw, 72px);
+  height: clamp(170px, 17vw, 280px);
+  padding-right: clamp(20px, 4vw, 72px);
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+  color: inherit;
+  text-decoration: none;
+}
+.list-card-media {
+  position: relative;
+  flex: 0 0 38%;
+  align-self: stretch;
+  overflow: hidden;
+}
+.list-card-media img {
+  position: absolute;
+  top: 50%;
+  left: 8%;
+  width: 84%;
+  height: auto;
+  transform: translateY(calc(var(--focus, 0.5) * -100%));
+  transition: translate 0.4s ease;
+}
+/* Phones show their top (the screen's header), cropped further down. */
+.list-card-media--phone img { top: 12%; left: 22%; width: 56%; transform: none; }
+/* Images whose top matters (the Fjällräven mat) start just below the top. */
+.list-card-media--top img { top: 10%; transform: none; }
+/* Tall illustrations (the cherries) shown whole, centred in the card. */
+.list-card-media--fit img { top: 10%; left: 50%; width: auto; height: 80%; transform: translateX(-50%); }
+.list-card:hover .list-card-media img,
+.list-card:focus-visible .list-card-media img { translate: 0 -8px; }
+.list-card-text {
+  display: grid;
+  gap: 0.4em;
+  max-width: 34em;
+  text-transform: none;
+}
+.list-card-title {
+  font-size: clamp(18px, 2vw, 34px);
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.list-card-sub {
+  font-size: clamp(11px, 0.95vw, 15px);
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--grey-text);
+}
+.list-card-blurb {
+  margin-top: 0.6em;
+  font-size: clamp(13px, 1.05vw, 17px);
+  line-height: 1.45;
+}
+.list-card:hover .list-card-title { text-decoration: underline; text-underline-offset: 0.12em; }
+@media (max-width: 640px) {
+  .list-card { height: 150px; }
+  .list-card-media { flex-basis: 42%; }
+  .list-card-blurb { display: none; }
+}
+@keyframes list-card-in {
+  from { opacity: 0; translate: 0 24px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .list-card { animation: list-card-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) calc(var(--i, 0) * 70ms) both; }
+}
+
+.wall-set {
+  display: flex;
+  flex: none;
+}
+
+/* Margin (not flex gap) so one set is exactly n * (col + gap) wide and -50% loops cleanly. */
+.wall-col {
+  flex: none;
+  width: var(--col-w);
+  margin-right: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.card {
+  display: block;
+  position: relative;
+  flex: none;
+  width: 100%;
+  height: calc(var(--col-w) * var(--r));
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+
+a.card {
+  color: inherit;
+  text-decoration: none;
+}
+
+.card img {
+  position: absolute;
+  inset: 8%;
+  width: 84%;
+  height: 84%;
+  object-fit: contain;
+  transition: translate 0.4s ease;
+}
+
+a.card:hover img,
+a.card:focus-visible img { translate: 0 -6px; }
+
+/* Project card: image on top, title and subtitle bottom left. */
+.card--project {
+  display: flex;
+  flex-direction: column;
+  container-type: inline-size;
+}
+
+.card-media {
+  display: block;
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  margin: 10% 10% 0;
+}
+.card--project .card-media img { inset: 0; width: 100%; height: 100%; }
+.card-media--framed img { filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.22)); }
+.card-media--multiply img { mix-blend-mode: multiply; }
+/* Phone screens keep their size: the image fills the width from the top and
+   the bottom is cropped, rather than the phones shrinking to fit. */
+.card-media--phone { overflow: hidden; margin: 10% 10% 0; }
+.card--project .card-media--phone img { inset: 0 0 auto; height: auto; }
+/* Full-bleed artwork: the image fills the card, the title sits over it. */
+.card--bleed .card-media {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+.card--project.card--bleed .card-media img { object-fit: cover; }
+.card--bleed .card-text { position: relative; margin-top: auto; }
+a.card--bleed:hover img { translate: none; }
+/* Print work sits a little smaller in its card, with more air around it. */
+.card-media--framed { margin: 15% 17% 0; }
+
+.card-text {
+  display: block;
+  padding: 7cqi 8cqi 8cqi;
+  text-transform: uppercase;
+}
+.card-title {
+  display: block;
+  font-size: clamp(15px, 8.5cqi, 38px);
+  font-weight: 600;
+  line-height: 1;
+}
+.card-sub {
+  display: block;
+  margin-top: 0.45em;
+  font-size: clamp(11px, 5cqi, 22px);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--grey-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card img { transition: none; }
+}
+
+/* ---------- Card preview ----------
+   main.js lifts a larger copy of the pointed-at card over the wall (both
+   rows tall, centered on the card) and darkens the screen behind it. The
+   open preview is a link to the project and takes the pointer; the veil
+   never does. */
+
+.card-preview-veil,
+.card-preview {
+  position: fixed;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Darkens the whole screen behind the preview. */
+.card-preview-veil {
+  inset: 0;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.2);
+  transition: opacity 0.25s ease, visibility 0s 0.25s;
+}
+.card-preview-veil.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease;
+}
+.card-preview-veil.is-open.takes-clicks { pointer-events: auto; }
+
+/* Position and size set by main.js. The card part and the info panel have
+   fixed widths; the box clips them while it widens, so nothing reflows.
+   --ph is the box height; type and spacing scale with it (design: 555px). */
+.card-preview {
+  z-index: 21;
+  display: flex;
+  overflow: hidden;
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.16);
+  transition: opacity 0.15s ease, visibility 0s 0.15s;
+}
+.card-preview.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: none;
+}
+.card-preview {
+  color: inherit;
+  text-decoration: none;
+}
+.card-preview:hover .card-preview-cta { text-decoration: underline; text-underline-offset: 0.2em; }
+
+.card-preview.is-expanded {
+  transition: left 0.42s cubic-bezier(0.3, 0.7, 0.2, 1), width 0.42s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+/* Widening to the left: card part stays on the right, info opens to its left. */
+.card-preview.to-left {
+  flex-direction: row-reverse;
+}
+
+/* A brand shape behind the expanded preview (Sambla's loop), on the text
+   side so the card art stays clear. Its width comes from the full box, so it
+   doesn't stretch while the box widens; it sits behind the art and the text
+   and fades in with the text. */
+.card-preview-loop {
+  position: absolute;
+  top: 0;
+  /* Measured from the card's side, which stays put while the box widens. */
+  left: calc(var(--pw) * 0.38);
+  width: calc(var(--pw) * 0.62);
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.card-preview-loop[hidden] { display: none; }
+.card-preview.to-left .card-preview-loop {
+  left: auto;
+  right: calc(var(--pw) * 0.38);
+  transform: scaleX(-1);
+}
+.card-preview.is-expanded .card-preview-loop {
+  opacity: 0.6;
+  transition: opacity 0.3s ease 0.2s;
+}
+
+.card-preview-card,
+.card-preview-info {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-preview-media {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  margin: calc(var(--ph) * 0.12) calc(var(--ph) * 0.06) 0;
+}
+.card-preview-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.card-preview-media--framed img { filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.22)); }
+.card-preview-card { position: relative; }
+.card-preview-card--bleed .card-preview-media {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+.card-preview-card--bleed .card-preview-media img { object-fit: cover; }
+.card-preview-card--bleed .card-preview-label { position: relative; margin-top: auto; }
+
+.card-preview-label {
+  padding: calc(var(--ph) * 0.06) calc(var(--ph) * 0.07) calc(var(--ph) * 0.05);
+  text-transform: uppercase;
+}
+.card-preview-label p,
+.card-preview-info p { margin: 0; }
+.card-preview-title {
+  font-size: calc(var(--ph) * 0.047);
+  font-weight: 600;
+  line-height: 1;
+}
+.card-preview-sub {
+  margin-top: 0.45em !important;
+  font-size: calc(var(--ph) * 0.036);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--grey-text);
+}
+
+/* Description centered in the panel; "View project" bottom right, on the
+   subtitle's line. */
+.card-preview-info {
+  position: relative;
+  justify-content: space-between;
+  padding: 0 calc(var(--ph) * 0.1) calc(var(--ph) * 0.05) calc(var(--ph) * 0.06);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.card-preview.to-left .card-preview-info {
+  padding-left: calc(var(--ph) * 0.1);
+  padding-right: calc(var(--ph) * 0.06);
+}
+.card-preview.is-expanded .card-preview-info {
+  opacity: 1;
+  transition: opacity 0.3s ease 0.2s;
+}
+/* Stickers sit behind the text, measured from the panel's edge next to the
+   card (so they mirror when the preview opens to the left). */
+.card-preview-stickers {
+  position: absolute;
+  inset: 0;
+}
+.card-preview-sticker {
+  position: absolute;
+  top: calc(var(--ph) * var(--y));
+  left: calc(var(--ph) * var(--x));
+  width: calc(var(--ph) * var(--size));
+  height: auto;
+}
+.card-preview.to-left .card-preview-sticker {
+  left: auto;
+  right: calc(var(--ph) * var(--x));
+}
+/* Opening left, the links move to the outer corner, away from the sticker
+   by the card. */
+.card-preview.to-left .card-preview-ctas { align-self: flex-start; align-items: flex-start; }
+.card-preview-blurb,
+.card-preview-ctas { position: relative; }
+
+.card-preview-blurb {
+  margin: auto 0 !important;
+  font-size: calc(var(--ph) * 0.043);
+  font-weight: 400;
+  line-height: 1.5;
+}
+/* Stacked in the outer corner, clear of the sticker by the card. */
+.card-preview-ctas {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-end;
+  align-items: flex-end;
+  gap: calc(var(--ph) * 0.02);
+}
+.card-preview-cta {
+  margin: 0;
+  font-size: calc(var(--ph) * 0.032);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Stacked (phones): the description lies over the card part and fades in
+   over the image; type scales with the card's width. */
+/* Close button, top right, when the preview was opened by a click. */
+.card-preview-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--text);
+  cursor: pointer;
+}
+.card-preview.has-close .card-preview-close { display: grid; }
+/* Sideways swipes go to main.js (they step through the projects). */
+.card-preview.has-close { touch-action: pan-y; }
+/* Arrows beside a click-opened preview step through the projects. */
+.card-preview-arrow {
+  position: fixed;
+  z-index: 22;
+  display: none;
+  place-items: center;
+  width: 36px;
+  height: 56px;
+  translate: -50% -50%;
+  color: #fff;
+  opacity: 0.85;
+  cursor: pointer;
+}
+.card-preview-arrow.is-open { display: grid; }
+.card-preview-info-title { display: none; }
+.card-preview.is-stacked .card-preview-info {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: calc(var(--pw) * 0.09) calc(var(--pw) * 0.08) calc(var(--pw) * 0.08);
+  background: var(--card-bg);
+}
+.card-preview.is-stacked .card-preview-info-title {
+  display: block;
+  position: relative;
+  font-size: calc(var(--pw) * 0.075);
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.card-preview.is-stacked .card-preview-blurb { font-size: calc(var(--pw) * 0.052); }
+.card-preview.is-stacked .card-preview-ctas { align-self: flex-start; align-items: flex-start; }
+.card-preview.is-stacked .card-preview-cta { font-size: calc(var(--pw) * 0.042); }
+.card-preview.is-stacked .card-preview-loop,
+.card-preview.is-stacked .card-preview-stickers { display: none; }
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 800px) {
+  .site-header { padding-top: 36px; }
+  .nav { gap: 6px 28px; }
+}
+
+/* ---------- Project pages ---------- */
+
+/* Compact header: menu left, name centered, current project + Next right.
+   Sticky; both sides are vertically centered on the name. */
+.project-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(16px, 2vw, 24px);
+  padding: 24px clamp(var(--gutter), 3vw, 40px);
+  margin-bottom: 40px;
+  font-size: clamp(13px, 1.1vw, 15px);
+  text-transform: uppercase;
+  background: var(--bg);
+}
+/* Scrolled, the header keeps its solid white background: no fade. */
+
+/* Arriving on a project page, the whole header rolls down from above. The
+   name rolls with it, so it leaves the page-to-page name glide out here. */
+@keyframes header-roll-down {
+  from { transform: translateY(-100%); }
+  to { transform: none; }
+}
+.project-header .name { view-transition-name: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .project-header { animation: header-roll-down 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+}
+
+/* Hidden while scrolling down. A thin strip stays at the top of the window
+   (the ::after below the header's edge), so pointing there brings the header
+   back; so does keyboard focus. */
+.project-header {
+  transition: background-color 0.3s ease, translate 0.35s ease;
+}
+.project-header.is-hidden { translate: 0 -100%; }
+.project-header.is-hidden:hover,
+.project-header.is-hidden:focus-within { translate: 0 0; }
+.project-header::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 24px;
+  pointer-events: none;
+}
+.project-header.is-hidden::after { pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) {
+  .project-header { transition: none; }
+}
+
+.project-header a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.project-header a:not(.name):hover { border-bottom-color: currentColor; }
+
+.project-nav,
+.project-current {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.project-nav { gap: 8px clamp(18px, 2.6vw, 40px); }
+.project-current {
+  justify-content: flex-end;
+  gap: clamp(18px, 3.6vw, 56px);
+}
+
+.project-header .name {
+  font-size: clamp(28px, 3vw, 40px);
+  text-transform: none;
+}
+
+/* Tagline over the project name, centered. */
+.project-tagline {
+  margin: 0;
+  line-height: 1.3;
+  text-align: center;
+}
+.project-tagline strong { display: block; font-weight: 600; }
+
+/* Two rows once the three columns get tight: name on top, menu and project below. */
+@media (max-width: 860px) {
+  .project-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "name name" "nav current";
+    gap: 12px 16px;
+    font-size: 14px;
+  }
+  .project-header .name { grid-area: name; justify-self: center; }
+  .project-nav { grid-area: nav; gap: 20px; }
+  .project-current { grid-area: current; gap: 20px; }
+}
+@media (max-width: 640px) {
+  /* Phones drop the project name; the menu and Next are enough. */
+  .project-tagline { display: none; }
+  .project-header { grid-template-columns: max-content minmax(0, 1fr); }
+}
+/* Pages without a current project (About): the menu centered under the name. */
+@media (max-width: 860px) {
+  .project-header--plain { grid-template-areas: "name name" "nav nav"; }
+  .project-header--plain .project-nav { justify-self: center; }
+}
+@media (max-width: 400px) {
+  .project-header { font-size: 13px; }
+  .project-nav, .project-current { gap: 14px; }
+}
+
+.project {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* Case intro: text left, photo running off the right edge.
+   The photo stretches to the text's height, so both columns end level. */
+/* Fills the first screen under the sticky header (--header-h is set by the
+   page script), so the next section only shows once you scroll. */
+.case-intro {
+  --intro-top: clamp(16px, 6vw, 96px);
+  display: grid;
+  /* Text ~44%, photo ~56% of the row, as in the design at 1248px. */
+  grid-template-columns: minmax(0, 492fr) minmax(0, 639fr);
+  align-content: start;
+  align-items: stretch;
+  gap: clamp(24px, 2.6vw, 40px);
+  /* The header's 40px bottom margin collapses with --intro-top; the larger one wins. */
+  min-height: calc(100svh - var(--header-h, 120px) - max(40px, var(--intro-top)));
+  margin-top: var(--intro-top);
+  padding: 0 0 clamp(56px, 8vw, 120px) clamp(var(--gutter), 7vw, 108px);
+}
+
+/* Text spans the photo's height: eyebrow at the top, facts on the bottom edge. */
+.case-text {
+  display: flex;
+  flex-direction: column;
+  padding-top: clamp(0px, 1.1vw, 18px);
+}
+.case-facts { margin: auto 0 0; }
+
+.case-eyebrow {
+  margin: 0 0 clamp(14px, 2.2vw, 36px);
+  font: 400 clamp(16px, 1.5vw, 24px)/1.2 var(--font-caslon);
+  color: var(--grey-text);
+  text-transform: uppercase;
+}
+.case-title {
+  margin: 0 0 clamp(12px, 1.2vw, 20px);
+  font-size: clamp(34px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+.case-lead {
+  max-width: 34em;
+  margin: 0 0 clamp(20px, 3vw, 48px);
+  font-size: clamp(15px, 1.35vw, 21px);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.case-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px clamp(24px, 3vw, 48px);
+}
+/* One row, packed close: Deliverables wraps if it must; Duration and Team
+   stay put. */
+.case-facts > div:first-child { flex: 0 1 auto; max-width: 26em; }
+/* Computers: one row. Deliverables gets the free width (but never less than
+   about ten characters), the others shrink and wrap only when they must, so
+   no column becomes a tall stack and the row ends level with the image. */
+@media (min-width: 861px) {
+  .case-facts { flex-wrap: nowrap; }
+  .case-facts > div:first-child { flex: 1 1 10em; max-width: 26em; }
+  .case-facts > div:not(:first-child) { flex: 0 1 auto; }
+  /* The first line of each fact sits on the photo's bottom edge; any further
+     lines run on below it. */
+  .case-facts dd { height: 1lh; }
+}
+/* Four facts: two rows of two instead of one long row. */
+.case-facts.case-facts--grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, max-content));
+}
+.case-facts--grid > div:first-child { max-width: 18em; }
+.case-facts--grid > div:not(:first-child) { white-space: normal; }
+.case-facts dt {
+  margin-bottom: 10px;
+  font: 400 clamp(15px, 1.4vw, 22px)/1.2 var(--font-caslon);
+  color: var(--grey-text);
+}
+.case-facts dd {
+  margin: 0;
+  font-size: clamp(13px, 0.95vw, 15px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: 0.05em;
+}
+
+/* Photo keeps its own proportions and sets the row height: the same size
+   and shape on every page (one rounded corner), even where the text beside
+   it runs longer. */
+.case-media {
+  position: relative;
+  align-self: start;
+  width: 100%;
+  aspect-ratio: 639 / 417;
+  margin: 0;
+  overflow: hidden;
+  border-top-left-radius: 28px;
+}
+/* Narrower computers: the text wraps onto more lines, so the image is a
+   little taller to keep the fact row level with its bottom edge. */
+@media (min-width: 861px) and (max-width: 1299px) {
+  .case-media { aspect-ratio: 5 / 4; }
+}
+@media (min-width: 861px) and (max-width: 939px) {
+  .case-media { aspect-ratio: 1; }
+}
+.case-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 65% center;
+}
+/* For illustrations: contained on the card grey instead of cropped. */
+.case-media--panel { background: var(--card-bg); }
+.case-media--panel img { object-fit: contain; padding: 8%; }
+/* The phones on their podium fill more of the panel. The grey darkens
+   towards the bottom like a floor, so the podium stands on something. */
+.case-media--phones {
+  background: linear-gradient(180deg, var(--card-bg) 0 50%, #ECE8E2 78%, #E4DFD8 100%);
+}
+.case-media--phones img { padding: 5% 4% 3%; }
+/* The alphabet poster as a print on the panel: larger, with a soft shadow. */
+.case-media--poster img {
+  padding: 2%;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.14));
+}
+
+@media (max-width: 860px) {
+  .case-intro {
+    grid-template-columns: minmax(0, 1fr);
+    padding-right: var(--gutter);
+  }
+  .case-text { padding-top: 0; }
+}
+
+/* Each chapter below the intro gets a screen of its own: it is centered in
+   the space under the sticky header, so the chapters before and after stay
+   out of view while you look at it. */
+.chapter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100svh - var(--header-h, 120px));
+  /* Room between chapters, enough for the parallax drift (parallax.js). */
+  padding-block: clamp(72px, 8vw, 128px);
+}
+.chapter > section { margin-bottom: 0; }
+/* The last screen (next project + contact footer) fills the space under the
+   header, split 426:546 as in the design (1398px wide); this also leaves
+   enough page for the last chapter to scroll fully into place. */
+.next-up {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: calc((100svh - var(--header-h, 120px)) * 0.438);
+  padding: 48px clamp(var(--gutter), 7vw, 108px);
+  color: inherit;
+  text-decoration: none;
+}
+.next-up-title {
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.next-up:hover .next-up-title,
+.next-up:focus-visible .next-up-title {
+  text-decoration: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.12em;
+}
+.next-up-sticker {
+  position: absolute;
+  top: 50%;
+  left: 76.1vw;
+  width: 8.2vw;
+  height: auto;
+  translate: 0 -50%;
+}
+/* A round sticker reads small at the tall stickers' width. */
+.next-up-sticker--round { width: 13vw; }
+/* A square-ish illustration, a little larger than the tall stickers. */
+.next-up-sticker--wide { width: 11vw; }
+/* A phone (Hodd): tall and narrow, so a little smaller. */
+.next-up-sticker--phone { width: 6.2vw; }
+/* A tablet lying sideways (Försvarsmakten): wide, so larger. */
+.next-up-sticker--tablet { width: 15vw; }
+
+.contact-footer {
+  min-height: calc((100svh - var(--header-h, 120px)) * 0.562);
+  padding: clamp(48px, 8vw, 128px) clamp(var(--gutter), 7vw, 108px) 64px;
+  color: #fff;
+  background: #000;
+}
+.contact-footer-title {
+  margin: 0 0 clamp(40px, 6.4vw, 100px);
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.contact-footer-label {
+  margin: 0 0 0.6em;
+  font-size: clamp(15px, 1.3vw, 20px);
+  font-weight: 700;
+}
+.contact-footer-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: clamp(15px, 1.4vw, 21px);
+  font-weight: 400;
+  line-height: 1.75;
+}
+.contact-footer a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.contact-footer a:hover { border-bottom-color: currentColor; }
+.contact-footer :focus-visible { outline-color: #fff; }
+/* The same footer on every page: heading and contact on the left, site map
+   on the right. The landing page adds white space above it (the other pages
+   have Next project there). */
+.contact-footer--home { margin-top: clamp(56px, 7vw, 112px); }
+.contact-footer-columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px clamp(48px, 8vw, 140px);
+}
+.site-map { margin-left: auto; text-align: right; }
+
+@media (max-width: 860px) {
+  .next-up-sticker { left: auto; right: var(--gutter); width: 52px; }
+  .next-up-sticker--round { width: 76px; }
+  .next-up-sticker--wide { width: 70px; }
+  .next-up-sticker--phone { width: 40px; }
+  .next-up-sticker--tablet { width: 140px; }
+}
+/* Phones: the sticker larger, lying behind the title like a picture. */
+@media (max-width: 640px) {
+  .next-up-title { position: relative; z-index: 1; }
+  .next-up-sticker { width: 100px; }
+  .next-up-sticker--round { width: 150px; }
+  .next-up-sticker--wide { width: 130px; }
+  .next-up-sticker--phone { width: 76px; }
+  /* Dark, so it sits above the title instead of behind it. */
+  .next-up-sticker--tablet { width: 120px; translate: 0 calc(-100% - 14px); }
+}
+/* Stickers give a small wiggle when the pointer is on them, or on phones
+   when tapped (each one on its own, not the whole section). */
+@keyframes sticker-wiggle {
+  0%, 100% { rotate: 0deg; }
+  20% { rotate: -4deg; }
+  40% { rotate: 3deg; }
+  60% { rotate: -2deg; }
+  80% { rotate: 1deg; }
+}
+@media (hover: hover) and (min-width: 641px) and (prefers-reduced-motion: no-preference) {
+  .research-sticker:hover,
+  .role-sticker:hover,
+  .learning-sticker:hover,
+  .next-up-sticker:hover,
+  .campaign-piece--megaphone:hover {
+    animation: sticker-wiggle 0.6s ease-in-out;
+  }
+}
+/* Phones wiggle a sticker when it's tapped instead (stickers.js). */
+@media (prefers-reduced-motion: no-preference) {
+  .is-wiggling { animation: sticker-wiggle 0.6s ease-in-out; }
+}
+
+/* Parallax in two zones. Progress is the chapter's pass through the area
+   under the header; with chapters one screen tall, a chapter's content center
+   sits at the bottom edge at 25%, mid-screen at 50% and the top edge at 75%.
+   - In:   until the content reaches 30% up the screen (40%), stickers catch up
+           from --depth lower and text lags from --linger higher.
+   - Lock: from there until the content is 15% from the top (67.5%),
+           everything holds its design position and moves with the page.
+   - Out:  after that the parallax returns the other way as it leaves.
+   Browsers without scroll-driven animations simply skip it. */
+@keyframes sticker-parallax {
+  0% {
+    transform: translateY(var(--depth, 35px));
+    animation-timing-function: cubic-bezier(0.33, 0, 0.3, 1);
+  }
+  40%, 67.5% { transform: none; }
+  67.5% { animation-timing-function: cubic-bezier(0.7, 0, 0.67, 1); }
+  100% { transform: translateY(calc(-1 * var(--depth, 35px))); }
+}
+@keyframes text-linger {
+  0% {
+    transform: translateY(calc(-1 * var(--linger, 12svh)));
+    animation-timing-function: cubic-bezier(0.33, 0, 0.3, 1);
+  }
+  40%, 67.5% { transform: none; }
+  67.5% { animation-timing-function: cubic-bezier(0.7, 0, 0.67, 1); }
+  100% { transform: translateY(var(--linger, 12svh)); }
+}
+@supports (animation-timeline: view()) {
+  @media (min-width: 861px) and (prefers-reduced-motion: no-preference) {
+    /* Stickers follow their chapter's progress through the viewport (not
+       their own), so a centered chapter shows every sticker exactly at its
+       design position. */
+    .chapter,
+    .next-up {
+      view-timeline-name: --parallax;
+      /* Measure against the area under the sticky header. */
+      view-timeline-inset: var(--header-h, 0px) 0px;
+    }
+    .research-sticker,
+    .role-sticker,
+    .learning-sticker,
+    .next-up-sticker,
+    .campaign-piece {
+      animation: sticker-parallax linear both;
+      animation-timeline: --parallax;
+    }
+    /* Keep the parallax running underneath the hover wiggle. */
+    .research-sticker:hover,
+    .role-sticker:hover,
+    .learning-sticker:hover,
+    .next-up-sticker:hover,
+    .campaign-piece--megaphone:hover {
+      animation: sticker-parallax linear both, sticker-wiggle 0.6s ease-in-out;
+      animation-timeline: --parallax, auto;
+    }
+
+    /* Text lags on the way in and out, and locks with the content between. */
+    .challenge-copy,
+    .research-copy,
+    .concept-copy,
+    .campaign-copy,
+    .role-copy,
+    .learning-copy {
+      --linger: 12svh;
+      animation: text-linger linear both;
+      animation-timeline: --parallax;
+    }
+    /* Less inside the sand bands, which also clip the text at their edge. */
+    .challenge-copy,
+    .learning-copy { --linger: 7svh; }
+    .case-challenge,
+    .case-learning { overflow: clip; }
+
+    .research-sticker--scarf { --depth: 30px; }
+    .research-sticker--beanie { --depth: 55px; }
+    .research-sticker--sleeping-mat { --depth: 40px; }
+    .research-sticker--jacket { --depth: 25px; }
+    .research-sticker--notepad { --depth: 65px; }
+    .campaign-piece--billboard { --depth: 15px; }
+    .campaign-piece--phone { --depth: 30px; }
+    .campaign-piece--megaphone { --depth: 50px; }
+    .role-sticker--sweater { --depth: 40px; }
+    .role-sticker--extinguisher { --depth: 25px; }
+    .role-sticker--radio { --depth: 60px; }
+    .learning-sticker--blanket { --depth: 27px; }
+    .learning-sticker--mittens { --depth: 57px; }
+    .next-up-sticker { --depth: 40px; }
+  }
+}
+
+@media (max-width: 860px) {
+  .chapter { min-height: 0; padding-block: 96px; }
+}
+
+/* Case film: its own screen right after the intro. The 16:9 player is as
+   wide as the page margins allow, but never taller than fits under the
+   title on one screen. Rounded top-left corner like the intro photo. */
+#case-film { scroll-margin-top: var(--header-h, 120px); }
+.case-film {
+  --film-w: min(100vw - 2 * clamp(var(--gutter), 7vw, 108px),
+                (100svh - var(--header-h, 120px) - 2 * clamp(48px, 6vw, 96px) - clamp(36px, 4.4vw, 72px) - clamp(16px, 2.4vw, 40px)) * 16 / 9);
+  width: var(--film-w);
+  margin-inline: auto;
+}
+.film-title {
+  margin: 0 0 clamp(16px, 2.4vw, 40px);
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.film-player {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-top-left-radius: 28px;
+  background: #000;
+}
+.film-player img,
+.film-player iframe,
+.film-player video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+.film-player img { transition: scale 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.film-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(64px, 7vw, 112px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff;
+  translate: -50% -50%;
+  transition: scale 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+/* Play triangle, nudged right so it looks centered. */
+.film-play::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 54%;
+  border-style: solid;
+  border-width: 0.18em 0 0.18em 0.3em;
+  border-color: transparent transparent transparent #000;
+  font-size: clamp(64px, 7vw, 112px);
+  translate: -50% -50%;
+}
+.film-player:hover img { scale: 1.02; }
+.film-player:hover .film-play,
+.film-player:focus-visible .film-play { scale: 1.08; }
+
+/* ---------- Sambla case ----------
+   Same build as the Fjällräven case: intro, then one chapter per screen on
+   white, with the illustrations as stickers (wiggle and parallax below). */
+.case-media--center img { object-position: center; }
+/* Keeps the top of the picture (heads, faces) when the panel crops it. */
+.case-media--top img { object-position: center top; }
+/* A title card on black: kept whole (contained), on the same black, so it
+   never crops the words when the row grows taller. */
+.case-media--black { background: #050709; }
+.case-media--black img { object-fit: contain; }
+
+.sambla-chapter {
+  padding-inline: clamp(var(--gutter), 7vw, 108px);
+}
+.sambla-copy {
+  max-width: 44em;
+  margin-bottom: clamp(32px, 4.5vw, 72px);
+}
+.sambla-title {
+  margin: 0 0 clamp(12px, 1.4vw, 24px);
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.sambla-title:last-child { margin-bottom: 0; }
+.sambla-text {
+  max-width: 36em;
+  margin: 0;
+  font-size: clamp(15px, 1.35vw, 21px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+.sambla-chapter figure { margin: 0; }
+.sambla-chapter img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Sketch → first colour → final, joined by hand-drawn arrows. */
+.sambla-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(8px, 1.5vw, 24px);
+}
+.sambla-step { flex: 0 1 25vw; }
+/* The first colour pass a little smaller, the final pig a little larger. */
+.sambla-step:nth-of-type(2) { flex-basis: 19vw; }
+.sambla-step:nth-of-type(3) { flex-basis: 30vw; }
+.sambla-step img { width: 100%; }
+/* The sketch comes on its own white card; a soft shadow shows its edge. */
+.sambla-step--sketch img { filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.12)); }
+.sambla-arrow {
+  flex: 0 0 auto;
+  width: clamp(40px, 7vw, 110px);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The set: a loose row of stickers, then the doors opening. */
+.sambla-set,
+.sambla-colours {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 3vw, 56px) clamp(16px, 3vw, 56px);
+}
+/* The whole set at once, in two rows that fit on one screen. */
+.sambla-set {
+  --item: clamp(72px, min(10.5vw, (100svh - var(--header-h, 120px)) * 0.2), 200px);
+  gap: clamp(16px, 2.5vw, 40px) clamp(12px, 2vw, 36px);
+  max-width: calc(7 * var(--item) + 6 * clamp(12px, 2vw, 36px));
+  margin-inline: auto;
+}
+.sambla-set .sambla-sticker { width: var(--item); }
+/* A chapter on a full-width sand band, like the bands on the Fjällräven page. */
+.chapter--band { background: var(--card-bg); }
+/* A short band: as tall as its content, not a whole screen. */
+.chapter--short { min-height: 0; }
+/* The phone is drawn tall, so it is set a little smaller to sit level. */
+.sambla-set .sambla-sticker--phone img { width: 78%; margin-inline: auto; }
+.sambla-set .sambla-sticker--smaller img { width: 88%; margin-inline: auto; }
+.sambla-colours .sambla-sticker { width: clamp(96px, 18vw, 280px); }
+.sambla-colours { max-width: calc(3 * clamp(96px, 18vw, 280px) + 2 * clamp(16px, 3vw, 56px)); margin-inline: auto; }
+.sambla-sticker img { width: 100%; }
+.sambla-wide {
+  width: 100%;
+  margin-top: clamp(40px, 5vw, 88px);
+}
+/* Facts with a call to action beside them, sitting at the foot of the
+   intro text like .case-facts on its own. */
+.case-facts-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 24px clamp(32px, 4vw, 64px);
+  margin-top: auto;
+}
+.case-facts-row .case-facts { margin: 0; }
+/* A call to action right under the intro lead. */
+.case-cta-wrap { margin: 4px 0 32px; }
+.case-cta {
+  display: inline-block;
+  padding: 0.9em 1.6em;
+  border-radius: 999px;
+  background: var(--forest);
+  color: var(--bg);
+  font-size: clamp(13px, 0.95vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.2s;
+}
+.case-cta:hover { background: var(--text); }
+.case-cta:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+/* Phones: buttons run the full width of the page. */
+@media (max-width: 640px) {
+  .case-cta { display: block; width: 100%; text-align: center; }
+}
+
+/* Order pop-up: a white card on a darkened page. */
+.order-dialog {
+  width: min(520px, 100% - 2 * var(--gutter));
+  max-height: calc(100% - 2 * var(--gutter));
+  padding: 0;
+  border: 0;
+  border-radius: var(--card-radius);
+  background: var(--bg);
+  color: var(--text);
+}
+.order-dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+.order-form {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  padding: clamp(24px, 4vw, 44px);
+}
+.order-title {
+  margin: 0;
+  padding-right: 40px;
+  font-size: clamp(26px, 2.6vw, 38px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.order-intro { margin: -6px 0 4px; font-size: 15px; line-height: 1.35; color: var(--grey-text); }
+.order-close {
+  position: absolute;
+  top: clamp(14px, 2vw, 24px);
+  right: clamp(14px, 2vw, 24px);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.order-close:hover, .order-close:focus-visible { background: rgba(0, 0, 0, 0.06); }
+.order-close svg { width: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+.order-group {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.order-group legend {
+  margin-bottom: 14px;
+  padding: 0;
+  font: 500 15px/1.2 var(--font-body);
+  color: var(--grey-text);
+}
+.order-group + .order-group { margin-top: 6px; }
+/* A thin line between your details and the print. */
+.order-divider { width: 100%; margin: 8px 0 0; border: 0; border-top: 1px solid #ddd; }
+.order-choice { display: flex; flex-wrap: wrap; gap: 8px; }
+/* Two pills; the chosen one fills in. */
+.order-choice label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  border-radius: 999px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.order-choice input { position: absolute; opacity: 0; pointer-events: none; }
+.order-choice label:has(input:checked) { border-color: var(--text); background: var(--text); color: var(--bg); }
+.order-choice label:has(input:focus-visible) { outline: 2px solid var(--text); outline-offset: 2px; }
+.order-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.order-field { display: grid; gap: 6px; }
+.order-field[hidden] { display: none; }
+.order-field span { font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+.order-field input,
+.order-field select,
+.order-field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  background: var(--bg);
+  color: inherit;
+  font: 400 16px/1.2 var(--font-body);
+}
+.order-field input::placeholder,
+.order-field textarea::placeholder { color: var(--grey-text); }
+.order-field textarea { resize: vertical; line-height: 1.35; }
+.order-note[hidden] { display: none; }
+.order-note { margin: -4px 0 0; font-size: 14px; line-height: 1.35; color: var(--grey-text); }
+.order-field input:focus-visible,
+/* The letter list draws its own chevron, set in from the edge like the text. */
+.order-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 44px;
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 16px center / 16px;
+}
+.order-field select:focus-visible,
+.order-field textarea:focus-visible { outline: 2px solid var(--text); outline-offset: 1px; }
+.order-check[hidden] { display: none; }
+.order-check { display: flex; align-items: center; gap: 10px; font-size: 15px; cursor: pointer; }
+.order-check input { width: 18px; height: 18px; margin: 0; accent-color: var(--text); }
+.order-send { justify-self: start; margin-top: 6px; border: 0; cursor: pointer; font-family: inherit; }
+@media (max-width: 420px) {
+  .order-row { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Customer orders: a strip of cards sliding slowly to the left, faded at
+   both edges. It pauses on hover and stands still with reduced motion. */
+.abc-orders {
+  --order-gap: clamp(12px, 1.6vw, 24px);
+  overflow: hidden;
+  margin-inline: calc(-1 * clamp(var(--gutter), 7vw, 108px));
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.abc-orders-track {
+  display: flex;
+  gap: var(--order-gap);
+  width: max-content;
+  /* The gap after the last card, so half the track is exactly one set. */
+  padding-right: var(--order-gap);
+  animation: abc-orders 40s linear infinite;
+}
+.abc-orders:hover .abc-orders-track { animation-play-state: paused; }
+@keyframes abc-orders { to { translate: -50% 0; } }
+/* Same size for all; the tall phone photos are cropped to 4:5. */
+.abc-order {
+  flex: none;
+  height: clamp(220px, 26vw, 360px);
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+}
+.abc-orders .abc-order img { width: 100%; height: 100%; object-fit: cover; }
+/* Name prints are artwork, not photos: shown whole, their white melting into
+   the card grey. */
+.abc-orders .abc-order--art img { padding: 10%; object-fit: contain; mix-blend-mode: multiply; }
+/* Out to the screen edges, through the chapter's padding (see .sambla-chapter). */
+@media (max-width: 860px) {
+  .abc-orders { margin-inline: calc(-1 * var(--gutter)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .abc-orders { overflow-x: auto; }
+  .abc-orders-track { animation: none; }
+}
+
+/* A som i alfabetet hero: the poster and a zoomed-in pan across it
+   cross-fade in the panel; the pan fills it edge to edge. */
+.abc-slide {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+.abc-slide.is-active { opacity: 1; pointer-events: auto; }
+.abc-pan {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #fff;
+  container-type: size;
+}
+/* The poster at twice the panel's width. It glides along each row of
+   letters, A–E left to right, F–J back, and so on down to Ö. --y1 to --y5
+   centre each row in the panel (the %s are how far down the poster the
+   row's middle sits), kept within the poster's edges whatever the panel's
+   shape. */
+.abc-pan img {
+  --x-end: calc(100cqw - 100%);
+  --y1: clamp(calc(100cqh - 100%), calc(50cqh - 12.6%), 0px);
+  --y2: clamp(calc(100cqh - 100%), calc(50cqh - 30%), 0px);
+  --y3: clamp(calc(100cqh - 100%), calc(50cqh - 46%), 0px);
+  --y4: clamp(calc(100cqh - 100%), calc(50cqh - 62%), 0px);
+  --y5: clamp(calc(100cqh - 100%), calc(50cqh - 84%), 0px);
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 200%;
+  max-width: none;
+  height: auto;
+  padding: 0;
+  filter: none;
+  object-fit: fill;
+  translate: 0 var(--y1);
+}
+.abc-pan.is-panning img { animation: abc-pan 54s ease-in-out forwards; }
+@keyframes abc-pan {
+  0%   { translate: 0 var(--y1); }
+  16%  { translate: var(--x-end) var(--y1); }
+  22%  { translate: var(--x-end) var(--y2); }
+  38%  { translate: 0 var(--y2); }
+  44%  { translate: 0 var(--y3); }
+  60%  { translate: var(--x-end) var(--y3); }
+  66%  { translate: var(--x-end) var(--y4); }
+  82%  { translate: 0 var(--y4); }
+  88%  { translate: 0 var(--y5); }
+  100% { translate: var(--x-end) var(--y5); }
+}
+/* In the bottom right corner, clear of the poster. */
+.abc-dots {
+  position: absolute;
+  right: clamp(10px, 1.4vw, 20px);
+  bottom: clamp(10px, 1.4vw, 20px);
+  display: flex;
+  gap: 4px;
+}
+/* A 24px hit area around each 8px dot. */
+.abc-dots button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.abc-dots button::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: auto;
+  border-radius: 50%;
+  background: var(--text);
+  opacity: 0.25;
+  transition: opacity 0.3s;
+}
+.abc-dots button[aria-pressed="true"]::before { opacity: 0.85; }
+.abc-dots button:focus-visible { outline: 2px solid var(--text); outline-offset: -4px; border-radius: 50%; }
+
+/* A som i alfabetet: the letters as a Pinterest-style feed. Each tile keeps
+   its own shape, and a few take two columns. The script sets each tile's row
+   span from its height (in 4px rows); without it the tiles fall into plain
+   rows. The white of the scans multiplies into the tile grey. */
+.abc-letters {
+  --cols: 5;
+  --abc-gap: clamp(10px, 1.4vw, 20px);
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: var(--abc-gap);
+}
+.abc-letters.is-masonry { grid-auto-rows: 4px; row-gap: 0; }
+.abc-letters figure {
+  align-self: start;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+}
+.abc-letters img { width: 100%; mix-blend-mode: multiply; }
+/* A tile grown to close a gap on phones (see the page script). */
+.abc-letters figure.is-stretched { display: flex; align-items: center; }
+.abc-big { grid-column: span 2; }
+/* The order prompt at the end of the feed: double width, on the page white. */
+.abc-cta-tile {
+  align-self: start;
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  padding: clamp(28px, 3.5vw, 56px);
+  background: var(--bg);
+}
+.abc-cta-title {
+  margin: 0;
+  font-size: clamp(24px, 2.4vw, 40px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+/* Kept on one line in a narrow column. */
+.abc-cta-tile .case-cta { padding-inline: 1.2em; white-space: nowrap; }
+/* Phones: the tile (white on white) drops its sides, so its full-width
+   button lines up with the page. */
+@media (max-width: 640px) {
+  .abc-cta-tile { padding-inline: 0; justify-items: stretch; }
+}
+.abc-cta-text { max-width: 22em; margin: 0 0 6px; font-size: clamp(15px, 1.2vw, 19px); line-height: 1.3; }
+
+@media (max-width: 1100px) { .abc-letters { --cols: 4; } }
+@media (max-width: 860px) { .abc-letters { --cols: 3; } }
+@media (max-width: 560px) { .abc-letters { --cols: 2; } }
+/* A line of text between the steps and the doors in the process. */
+.sambla-text--after { margin-top: clamp(48px, 6vw, 104px); }
+.sambla-text--after + .sambla-wide { margin-top: clamp(24px, 3vw, 48px); }
+
+/* The two sites, the second overlapping the first. */
+.sambla-webs {
+  display: flex;
+  flex-direction: column;
+}
+.sambla-web {
+  width: 74%;
+  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.12));
+}
+.sambla-web--rahalaitos {
+  position: relative;
+  margin: -14% 0 0 auto;
+}
+/* Then the Google ad and a guide, the other way round, and three phones.
+   These come with their own rounded corners, so the shadow follows the
+   image's shape. */
+.sambla-webs--flip,
+.sambla-phones { margin-top: clamp(56px, 7vw, 120px); }
+.sambla-shot { filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.12)); }
+/* The guide is the one to see: large and in front on the right. The
+   Google ad peeks out behind it on the left. */
+.sambla-shot--google { width: 56%; }
+.sambla-shot--guide {
+  position: relative;
+  width: 58%;
+  margin: -17% 0 0 auto;
+}
+.sambla-phones {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: clamp(12px, 4vw, 72px);
+}
+.sambla-phone {
+  width: clamp(96px, 19vw, 300px);
+  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.14));
+}
+/* The middle phone sits a little lower, for a looser row. */
+.sambla-phone:nth-child(2) { margin-top: 6%; }
+
+/* Teaser for the rest of the work: text on the left, a thumbs up beside it. */
+.sambla-more {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(24px, 5vw, 96px);
+}
+.sambla-more .sambla-copy { margin-bottom: 0; }
+.sambla-more-sticker {
+  flex: none;
+  width: clamp(110px, 15vw, 240px);
+  margin-right: clamp(0px, 8vw, 160px);
+}
+.sambla-more-sticker img { width: 100%; }
+
+/* The illustrations and screens on this page hold still; only the text
+   lingers, and the cherries by "Next project" keep their parallax and
+   wiggle (the shared .next-up-sticker rules). */
+@supports (animation-timeline: view()) {
+  @media (min-width: 861px) and (prefers-reduced-motion: no-preference) {
+    .sambla-copy {
+      --linger: 12svh;
+      animation: text-linger linear both;
+      animation-timeline: --parallax;
+    }
+    /* Text in a band, and just before and after one, holds still, so no
+       title slides across the band's edge. */
+    .chapter--band .sambla-copy,
+    .chapter--band + .chapter .sambla-copy,
+    .chapter:has(+ .chapter--band) .sambla-copy { animation: none; }
+    /* The first chapter after the intro holds still too, so its title never
+       peeks up into the first screen. */
+    .case-intro + .chapter :is(.sambla-copy, .challenge-copy, .research-copy, .concept-copy, .campaign-copy, .role-copy, .learning-copy) { animation: none; }
+  }
+}
+
+@media (max-width: 860px) {
+  .sambla-chapter { padding-inline: var(--gutter); }
+  /* Narrow screens: an S down the screen, small enough to fit one screen
+     (sketch left, first colour right, final left), with the arrows
+     curving from one to the next. */
+  .sambla-steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "sketch arrow1"
+      "arrow2 colour"
+      "final  final";
+    align-items: center;
+    gap: 0;
+    max-width: calc((100svh - 160px) / 1.45);
+    margin-inline: auto;
+  }
+  .sambla-step { width: 92%; }
+  .sambla-step:nth-of-type(1) { grid-area: sketch; justify-self: start; }
+  .sambla-step:nth-of-type(2) { grid-area: colour; justify-self: end; width: 84%; margin-top: -12%; }
+  .sambla-step:nth-of-type(3) { grid-area: final; justify-self: start; width: 58%; margin: -10% 0 0 4%; }
+  .sambla-arrow { width: 52%; justify-self: center; }
+  .sambla-arrow:nth-of-type(1) { grid-area: arrow1; rotate: 35deg; margin-top: 20%; }
+  .sambla-arrow:nth-of-type(2) { grid-area: arrow2; scale: -1 1; rotate: -35deg; margin-top: 50%; }
+  .sambla-web { width: 88%; }
+  .sambla-more { flex-direction: column; align-items: flex-start; }
+  /* Under the text, centred (beats .sambla-chapter figure's margin). */
+  .sambla-more .sambla-more-sticker { align-self: center; margin: 8px 0 0; }
+  .sambla-shot--google { width: 70%; }
+  .sambla-shot--guide { width: 80%; }
+}
+
+/* ---------- Sambla internship ----------
+   Built from the Sambla case's chapter pieces, plus boards (screenshots from
+   Figma), a low-, mid- and hi-fi row, and a row of illustrations. */
+.sambla-chapter .sambla-copy .sambla-text + .sambla-text { margin-top: 0.8em; }
+.intern-board {
+  width: 100%;
+  border-radius: 20px;
+}
+/* Computers: the flow sits smaller beside the copy (under it on narrow
+   screens). A click still opens it full size. */
+@media (min-width: 861px) {
+  .intern-board--side { flex: 0 0 auto; width: clamp(320px, 44vw, 720px); }
+}
+.intern-board--narrow {
+  width: min(100%, 900px);
+  margin: clamp(32px, 4vw, 64px) auto 0;
+}
+.intern-fidelity {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Bottoms level, so the captions line up. */
+  align-items: end;
+  gap: clamp(12px, 2vw, 32px);
+}
+.intern-fidelity img {
+  width: 100%;
+  border-radius: 16px;
+}
+.intern-fidelity figcaption {
+  margin-top: 12px;
+  font: 400 clamp(15px, 1.4vw, 22px)/1.2 var(--font-caslon);
+  color: var(--grey-text);
+}
+/* The monkey's widget cards, with text above and without below. */
+.intern-expressions {
+  display: grid;
+  gap: clamp(24px, 3vw, 48px);
+}
+.intern-expressions img { width: 100%; }
+/* Computers: smaller and centred (a click still opens them full size). */
+@media (min-width: 861px) {
+  .intern-expressions { width: min(100%, 760px); margin-inline: auto; }
+}
+/* The new icons: line versions above, colour versions below. Shown at
+   their own size, as the exports are small. The four images share one
+   height with the cards at the same place, so the rows line up. */
+.intern-icons {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  gap: 0 clamp(20px, 3vw, 48px);
+  margin-top: clamp(32px, 4vw, 64px);
+}
+.intern-icons img { width: auto; }
+/* Copy on the left, the "good job" animation beside it. */
+.intern-split {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 5vw, 96px);
+  margin-bottom: clamp(32px, 4.5vw, 72px);
+}
+.intern-split .sambla-copy { flex: 1 1 auto; margin-bottom: 0; }
+.intern-good-job { flex: 0 0 auto; width: clamp(180px, 26vw, 420px); }
+.intern-good-job img { width: 100%; }
+/* Image first on computers (A good job): the animation on the left. */
+@media (min-width: 861px) { .intern-split--flip > figure { order: -1; } }
+/* The icon hover loop beside Key learning. */
+.intern-hover { flex: 0 0 auto; width: clamp(160px, 18vw, 204px); margin: 0 auto; }
+/* Key learning, laid out like Fjällräven's: the image and the text close
+   together and centred as one group, the image on the left and the text
+   right-aligned beside it. Phones keep text first, image under it. */
+.intern-split--tight { gap: clamp(24px, 3vw, 48px); }
+.intern-split--tight .sambla-copy { flex: 0 1 auto; }
+.intern-split--tight .intern-hover { width: clamp(120px, 12vw, 170px); margin: 0; }
+/* Försvarsmakten's loop is wide, so it gets more room. */
+.fm-loop { flex: 0 0 auto; width: clamp(240px, 28vw, 440px); margin: 0; }
+.fm-loop img { display: block; width: 100%; height: auto; border-top-left-radius: 20px; }
+@media (max-width: 860px) { .fm-loop { width: 100%; } }
+@media (min-width: 861px) {
+  .intern-split--tight { justify-content: center; }
+  .intern-split--tight > figure { order: -1; }
+  .intern-split--tight .sambla-copy { text-align: right; }
+  .intern-split--tight .sambla-text { margin-left: auto; }
+}
+.intern-hover img { width: 100%; }
+@media (max-width: 860px) { .intern-hover { align-self: center; width: min(50vw, 220px); } }
+/* The swinging monkey beside the widget chapter's copy. */
+.intern-monkey { flex: 0 0 auto; width: clamp(200px, 28vw, 460px); margin: 0; }
+.intern-monkey img { width: 100%; }
+@media (max-width: 860px) {
+  .intern-icons { grid-template-columns: minmax(0, 1fr); }
+  .intern-split { flex-direction: column; align-items: flex-start; }
+  .intern-good-job { align-self: center; width: min(60vw, 300px); }
+  .intern-monkey { align-self: center; width: min(70vw, 320px); }
+}
+
+/* The challenge: full-width sand band. Stats on the left; title and text
+   on the right. The two overlap by one column, as in the design (1572px):
+   the title starts above the third stat. */
+.case-challenge {
+  --fjall-sand: #ECEAE2;
+  display: grid;
+  grid-template-columns: minmax(0, 618fr) minmax(0, 82fr) minmax(0, 471fr);
+  margin: 0 0 clamp(56px, 8vw, 120px);
+  padding: clamp(48px, 6vw, 96px) clamp(var(--gutter), 7.4vw, 120px) clamp(40px, 4.5vw, 72px) clamp(var(--gutter), 18vw, 290px);
+  background: var(--fjall-sand);
+}
+
+.challenge-copy {
+  grid-column: 2 / 4;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-top: 0.6vw;
+}
+.challenge-title {
+  margin: 0 0 clamp(16px, 2.4vw, 40px);
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.challenge-text {
+  width: min(100%, 14.6em);
+  margin: 0;
+  font-size: clamp(16px, 1.35vw, 21px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+/* Bars are photos of stacked Kånkens. Sizes scale with the stats area
+   (700px wide in the design) so the bar heights stay in proportion. */
+.challenge-stats {
+  grid-column: 1 / 3;
+  grid-row: 1;
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-template-rows: auto auto;
+  justify-content: space-between;
+}
+.stat {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  justify-items: center;
+  margin: 0;
+}
+/* Number sits right on top of its bar; bars share a bottom line. */
+.stat-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: end;
+}
+.stat-value {
+  margin: 0 0 2cqi;
+  font-size: clamp(18px, 3.9cqi, 30px);
+  font-weight: 600;
+  line-height: 1;
+}
+.stat img {
+  display: block;
+  width: calc(var(--w) / 714 * 100cqi);
+  height: auto;
+}
+.stat figcaption {
+  grid-row: 2;
+  margin-top: 2cqi;
+  font-size: clamp(11px, 2.3cqi, 17px);
+  line-height: 1.6;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .case-challenge {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 40px;
+    padding: 48px var(--gutter);
+  }
+  .challenge-copy { grid-column: 1; align-items: flex-start; padding-top: 0; }
+  .challenge-text { width: auto; max-width: 26em; }
+  .challenge-stats {
+    grid-column: 1;
+    grid-row: 2;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0 8px;
+  }
+  .stat figcaption { white-space: normal; }
+  .stat figcaption br { display: none; }
+}
+
+/* Research & insight: text on the left, sticker illustrations scattered on
+   the right. Positions are in vw from the design (1572px wide) so the stickers
+   keep their place around the text; they sit behind it. */
+.case-research {
+  position: relative;
+  min-height: 36.3vw;
+  margin: 0 0 clamp(56px, 8vw, 120px);
+  padding: 5.15vw var(--gutter) 0 clamp(var(--gutter), 7vw, 108px);
+}
+.research-copy {
+  position: relative;
+  z-index: 1;
+  /* Text sits over the stickers but lets the pointer through to them. */
+  pointer-events: none;
+}
+.research-title {
+  margin: 0 0 clamp(8px, 0.8vw, 14px);
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.research-text {
+  max-width: 61em;
+  margin: 0 0 1.2em;
+  font-size: clamp(15px, 1.35vw, 21px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+.research-key {
+  margin: 0;
+  font-size: clamp(16px, 1.5vw, 24px);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.research-sticker {
+  position: absolute;
+  height: auto;
+}
+/* Markup order is stacking order: beanie over scarf, notepad over jacket. */
+.research-sticker--scarf { top: 4.9vw; left: 59.9vw; width: 10.6vw; }
+.research-sticker--beanie { top: 0; left: 63.6vw; width: 9vw; }
+.research-sticker--sleeping-mat { top: 1.65vw; left: 72.8vw; width: 11.45vw; }
+.research-sticker--jacket { top: 16.1vw; left: 72.7vw; width: 15.65vw; }
+.research-sticker--notepad { top: 23.6vw; left: 67.9vw; width: 8.7vw; }
+
+@media (max-width: 860px) {
+  .case-research {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 16px 8px;
+    min-height: 0;
+    padding: 0 var(--gutter);
+  }
+  .research-copy { flex: 1 1 100%; margin-bottom: 16px; }
+  .research-sticker { position: static; width: 28%; }
+  .research-sticker--jacket { width: 34%; }
+}
+
+/* The concept: text left, product images right that crossfade in place. */
+.case-concept {
+  display: grid;
+  grid-template-columns: minmax(0, 553fr) minmax(0, 572fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 72px);
+  margin: 0 0 clamp(56px, 8vw, 120px);
+  padding: 0 clamp(var(--gutter), 7.2vw, 116px) 0 clamp(var(--gutter), 7vw, 108px);
+}
+.concept-title {
+  margin: 0 0 clamp(12px, 1.6vw, 28px);
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.concept-copy p {
+  max-width: 29em;
+  margin: 0 0 1.25em;
+  font-size: clamp(15px, 1.35vw, 21px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+.concept-copy p:last-child { margin-bottom: 0; }
+
+/* Slides share one box (the seat pads' proportions); the narrower jacket
+   photo is centered in it. */
+.concept-media {
+  position: relative;
+  aspect-ratio: 1600 / 1032;
+  margin: 0;
+}
+.concept-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 1.8s ease;
+}
+.concept-slide.is-active { opacity: 1; }
+
+@media (max-width: 860px) {
+  .case-concept {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding: 0 var(--gutter);
+  }
+}
+
+/* The campaign: text left, billboard + phone composition right. */
+.case-campaign {
+  display: grid;
+  grid-template-columns: minmax(0, 530fr) minmax(0, 584fr);
+  align-items: center;
+  gap: clamp(24px, 2vw, 32px);
+  margin: 0 0 clamp(56px, 8vw, 120px);
+  padding: 0 clamp(var(--gutter), 6.6vw, 108px) 0 clamp(var(--gutter), 7vw, 108px);
+}
+/* Sits a touch above the image's center line, as in the design. */
+.campaign-copy { margin-bottom: 2vw; }
+.campaign-title {
+  margin: 0 0 clamp(12px, 1.6vw, 28px);
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.campaign-text {
+  max-width: 30em;
+  margin: 0 0 1.9em;
+  font-size: clamp(15px, 1.35vw, 21px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+.campaign-quote {
+  margin: 0;
+  font-size: clamp(18px, 2vw, 32px);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.campaign-media {
+  position: relative;
+  aspect-ratio: 584 / 422;
+}
+/* Billboard, phone and megaphone are separate layers (so each can move);
+   positions are % of the composition box from the design. */
+.campaign-piece { position: absolute; height: auto; }
+.campaign-piece--billboard { left: 15.41%; top: 0.95%; width: 83.73%; }
+.campaign-piece--phone { left: -0.51%; top: 18.01%; width: 37.84%; }
+.campaign-piece--megaphone { left: 25.86%; top: 53.79%; width: 32.53%; }
+
+@media (max-width: 860px) {
+  .case-campaign {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding: 0 var(--gutter);
+  }
+}
+
+/* My role: text and a sticker cluster, centered as one group. The cluster
+   overlaps the text column slightly, as in the design (1310px wide). */
+.case-role {
+  display: grid;
+  /* The cluster's track is narrower than the cluster by the overlap, so the
+     group as seen stays centered. */
+  grid-template-columns: auto calc(25.3vw - 2.6vw);
+  justify-content: center;
+  align-items: start;
+  padding: 0 var(--gutter);
+}
+.role-title {
+  margin: 0 0 clamp(10px, 1.3vw, 20px);
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.role-intro {
+  margin: 0 0 1.5em;
+  font-size: clamp(15px, 1.35vw, 21px);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.role-list { margin: 0; }
+
+/* Positions are % of the cluster box; markup order is stacking order. */
+.role-stickers {
+  position: relative;
+  width: 25.3vw;
+  aspect-ratio: 331 / 304;
+  margin-left: -2.6vw;
+}
+.role-sticker { position: absolute; height: auto; }
+.role-sticker--sweater { left: 0; top: 45.7%; width: 41.4%; }
+.role-sticker--extinguisher { left: 33.5%; top: 0; width: 31.1%; }
+.role-sticker--radio { left: 50.8%; top: 40.5%; width: 49.2%; }
+
+@media (max-width: 860px) {
+  .case-role {
+    grid-template-columns: minmax(0, 1fr);
+    justify-content: stretch;
+    gap: 32px;
+  }
+  .role-stickers { width: min(80%, 320px); margin: 0 auto; }
+}
+
+/* Key learning: full-width sand band; stickers and right-aligned text are
+   centered as one group, as in the design (1468px wide). */
+.case-learning {
+  display: grid;
+  grid-template-columns: 20.2vw auto;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(48px, 7.56vw, 120px) var(--gutter) clamp(32px, 2.8vw, 48px);
+  background: #ECEAE2;
+}
+.learning-copy {
+  margin: 0 0 3.5vw -0.5vw;
+  text-align: right;
+}
+.learning-title {
+  margin: 0 0 clamp(10px, 1.4vw, 22px);
+  font-size: clamp(36px, 4.4vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.learning-text {
+  max-width: 29em;
+  margin: 0 0 0 auto;
+  font-size: clamp(15px, 1.3vw, 21px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+/* Positions are % of the cluster box; mittens sit on top of the blanket. */
+.learning-stickers {
+  position: relative;
+  aspect-ratio: 297 / 329;
+}
+.learning-sticker { position: absolute; height: auto; }
+.learning-sticker--blanket { left: 0; top: 12.8%; width: 80.5%; }
+.learning-sticker--mittens { left: 35%; top: 0; width: 65%; }
+
+@media (max-width: 860px) {
+  .case-learning {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding: 48px var(--gutter);
+  }
+  .learning-stickers { width: min(60%, 260px); margin: 0 auto; }
+  .learning-copy { margin: 0; text-align: left; }
+  .learning-text { margin-left: 0; }
+}
+
+/* Same grey panel as the cards on the front page. */
+.project-figure {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 56px;
+  padding: clamp(32px, 7vw, 88px) var(--gutter);
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+}
+.project-figure img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 78vh;
+}
+.project-figure--framed img { filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.22)); }
+
+.project-section {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: 16px clamp(24px, 5vw, 72px);
+  margin-bottom: 56px;
+}
+.project-section h2 {
+  margin: 0;
+  font: 400 clamp(28px, 3.4vw, 40px)/1.1 var(--font-caslon);
+}
+.project-section p {
+  max-width: 62ch;
+  margin: 0 0 1em;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Masonry gallery of image cards. */
+.gallery {
+  columns: 3 260px;
+  column-gap: var(--gap);
+  margin-bottom: 56px;
+}
+.gallery figure {
+  margin: 0 0 var(--gap);
+  padding: 12%;
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  break-inside: avoid;
+}
+.gallery img { display: block; width: 100%; height: auto; }
+
+.next-project {
+  display: block;
+  margin: 24px 0 96px;
+  padding-top: 32px;
+  border-top: 1px solid var(--text);
+  color: inherit;
+  text-decoration: none;
+}
+.next-project-label {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--grey-text);
+}
+.next-project-title {
+  display: block;
+  margin-top: 8px;
+  font-size: clamp(28px, 4.5vw, 48px);
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.next-project-title::after { content: " →"; font-weight: 400; }
+.next-project:hover .next-project-title { text-decoration: underline; text-underline-offset: 6px; }
+
+@media (max-width: 800px) {
+  .project-section { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Lightbox: case images open enlarged on click (projects/lightbox.js). */
+.is-zoomable { cursor: zoom-in; }
+.lightbox {
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: clamp(var(--gutter), 4vw, 56px);
+  border: 0;
+  background: transparent;
+  cursor: zoom-out;
+}
+.lightbox[open] {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+  justify-items: center;
+  gap: clamp(8px, 2vw, 32px);
+}
+.lightbox-arrow {
+  display: grid;
+  place-items: center;
+  width: clamp(40px, 4vw, 56px);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.lightbox-arrow:hover,
+.lightbox-arrow:focus-visible { background: rgba(0, 0, 0, 0.06); }
+.lightbox-arrow[hidden] { visibility: hidden; display: grid; }
+.lightbox-arrow svg {
+  width: 60%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lightbox::backdrop { background: rgba(255, 255, 255, 0.94); }
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.lightbox[open] img { animation: lightbox-in 0.25s ease; }
+@keyframes lightbox-in { from { opacity: 0; transform: scale(0.96); } }
+html:has(.lightbox[open]) { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .lightbox[open] img { animation: none; }
+}
+
+/* ---------- Apoteket Hjärtat, Livi ----------
+   Built from the Sambla chapter pieces: the two phones in the intro, the
+   key question set large, a ticked list of what Livi does, and the research
+   boards from the case PDF. */
+.case-media--livi img { padding: 5% 4% 3%; }
+.case-question {
+  max-width: 28em;
+  margin: 1em 0 0;
+  font-size: clamp(20px, 2.2vw, 34px);
+  font-weight: 600;
+  line-height: 1.15;
+}
+.livi-insight {
+  max-width: 36em;
+  margin: 1em 0 0;
+  font-size: clamp(15px, 1.35vw, 21px);
+  font-weight: 600;
+  line-height: 1.25;
+}
+.livi-list {
+  display: grid;
+  gap: 16px;
+  max-width: 36em;
+  margin: 1.4em 0 0;
+  padding: 0;
+  list-style: none;
+}
+.livi-list li {
+  position: relative;
+  padding-left: 2em;
+  font-size: clamp(14px, 1.1vw, 17px);
+  line-height: 1.3;
+}
+.livi-list strong {
+  display: block;
+  font-size: clamp(16px, 1.45vw, 22px);
+  font-weight: 600;
+}
+/* A tick drawn with two borders. */
+.livi-list li::before {
+  content: "";
+  position: absolute;
+  left: 0.2em;
+  top: 0.3em;
+  width: 0.95em;
+  height: 0.5em;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  rotate: -45deg;
+}
+/* Bullet lists on the project pages (My role on Apoteket and Fjällräven):
+   one look everywhere, a round bullet hanging left of the text. */
+.case-bullets,
+.role-list {
+  max-width: 36em;
+  padding: 0;
+  list-style: none;
+  font-size: clamp(15px, 1.35vw, 21px);
+  font-weight: 400;
+  line-height: 1.3;
+}
+.case-bullets { margin: 0.8em 0 0; }
+.case-bullets li,
+.role-list li { position: relative; padding-left: 1.1em; }
+.case-bullets li::before,
+.role-list li::before {
+  content: "";
+  position: absolute;
+  left: 0.15em;
+  top: 0.55em;
+  width: 0.32em;
+  height: 0.32em;
+  border-radius: 50%;
+  background: currentColor;
+}
+.case-bullets li + li,
+.role-list li + li { margin-top: 0.4em; }
+.case-bullets + .sambla-text { margin-top: 0.8em; }
+.livi-phone { flex: 0 0 auto; width: clamp(160px, 20vw, 300px); }
+.livi-phone img { width: 100%; filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.14)); }
+/* Livi's page and its Översikt are the ones to see: large in the middle,
+   the start page and the chat smaller on either side, all centred on one line. */
+.livi-phones { align-items: center; gap: clamp(10px, 3vw, 56px); }
+.livi-phones .sambla-phone { width: clamp(58px, 14vw, 230px); }
+.livi-phones .sambla-phone:nth-child(2),
+.livi-phones .sambla-phone:nth-child(3) { width: clamp(84px, 20vw, 330px); margin-top: 0; }
+/* On computers the four phones sit beside the solution's copy, sized as
+   shares of their own row. Narrower screens keep them under the copy. */
+@media (min-width: 861px) {
+  .intern-split .livi-phones {
+    flex: 0 0 auto;
+    width: clamp(440px, 48vw, 860px);
+    margin-top: 0;
+    gap: clamp(6px, 1vw, 18px);
+  }
+  .intern-split .livi-phones .sambla-phone { width: 21%; }
+  .intern-split .livi-phones .sambla-phone:nth-child(2),
+  .intern-split .livi-phones .sambla-phone:nth-child(3) { width: 27%; }
+}
+@media (max-width: 860px) {
+  .intern-split .livi-phones { align-self: stretch; }
+}
+/* Hodd: the two phones beside the copy on the rest of the app. */
+.hodd-phones { flex: 0 0 auto; width: clamp(200px, 28vw, 440px); margin: 0; }
+.hodd-phones img { display: block; width: 100%; height: auto; filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.14)); }
+@media (max-width: 860px) {
+  .hodd-phones { align-self: center; width: min(76vw, 340px); }
+}
+/* Hodd: wide Figma images under the copy, with a caption. The flows (a
+   long row of screens) scroll sideways on phones instead of shrinking. */
+.hodd-wide { margin: 0; }
+.hodd-wide img { display: block; width: 100%; height: auto; border-radius: 16px; }
+/* The Figma board is square: kept smaller so it fits on a screen. */
+.hodd-wide--board { width: min(100%, 860px); margin-inline: auto; }
+.hodd-wide figcaption,
+.hodd-iterations figcaption {
+  margin-top: 12px;
+  font: 400 clamp(15px, 1.4vw, 22px)/1.2 var(--font-caslon);
+  color: var(--grey-text);
+}
+.hodd-iterations { flex: 0 0 auto; width: clamp(260px, 42vw, 640px); margin: 0; }
+.hodd-iterations img { display: block; width: 100%; height: auto; border-radius: 16px; }
+/* Sadelscanner's patent drawings: one small drawing at a time, stacked in
+   the same spot and faded between, with dots under them. */
+.sadel-drawings { flex: 0 0 auto; width: clamp(220px, 24vw, 360px); margin: 0; }
+.sadel-slides { display: grid; aspect-ratio: 1; }
+.sadel-slides img {
+  grid-area: 1 / 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.3s;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.sadel-slides img.is-active { opacity: 1; }
+.sadel-drawings .swipe-dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+.sadel-drawings .swipe-dots button {
+  width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--text); opacity: 0.2; cursor: pointer; transition: opacity 0.2s;
+}
+.sadel-drawings .swipe-dots button.is-active { opacity: 1; }
+@media (max-width: 860px) {
+  .hodd-wide--strip .hodd-scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+  }
+  .hodd-wide--strip .hodd-scroll::-webkit-scrollbar { display: none; }
+  .hodd-wide--strip img { width: 260%; max-width: none; }
+  .hodd-iterations { width: 100%; }
+  .sadel-drawings { align-self: center; width: min(80vw, 360px); }
+}
+/* Hodd's diary log as a screen recording, in a simple phone frame. The
+   recording has a thin black edge (21px at the sides, 16px top and bottom
+   of 620×1294), so the video is a little larger than the screen and cropped. */
+.hodd-proto {
+  position: relative;
+  flex: 0 0 auto;
+  /* Never taller than the screen under the header. */
+  width: min(clamp(240px, 24vw, 340px), calc((100svh - var(--header-h, 120px) - 120px) * 582 / 1264));
+  aspect-ratio: 582 / 1264;
+  overflow: hidden;
+  border: 10px solid #1b1b1b;
+  border-radius: 44px;
+  box-sizing: content-box;
+  background: #1b1b1b;
+  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.14));
+}
+.hodd-proto video {
+  position: absolute;
+  top: -1.266%;
+  left: -3.608%;
+  width: 106.53%;
+  height: auto;
+  border-radius: 34px;
+}
+/* As a button: no button look, the play mark over the screen until it plays. */
+button.hodd-proto { padding: 0; font: inherit; cursor: pointer; }
+.hodd-proto .film-play { width: clamp(56px, 5vw, 80px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.hodd-proto .film-play::after { font-size: clamp(56px, 5vw, 80px); }
+.hodd-proto:hover .film-play,
+.hodd-proto:focus-visible .film-play { scale: 1.08; }
+.hodd-proto.is-playing .film-play { opacity: 0; scale: 0.8; }
+.hodd-proto .film-play { transition: scale 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s; }
+@media (max-width: 860px) {
+  .hodd-proto { align-self: center; width: min(68vw, 300px); }
+}
+/* The logo on a screen of its own, where the reflection was. */
+/* Not a full screen: the logo follows closer after the text above. */
+/* The Livi star beside My role (under it on narrow screens). */
+.livi-logo { flex: 0 0 auto; width: clamp(140px, 20vw, 300px); margin: 0 auto; }
+@media (max-width: 860px) { .livi-logo { align-self: center; width: min(40vw, 180px); } }
+.livi-logo img { display: block; width: 100%; height: auto; }
+.livi-board { width: min(100%, 1000px); margin: clamp(32px, 4vw, 64px) auto 0; }
+.livi-board img { width: 100%; }
+.livi-sketch { flex: 0 0 auto; width: clamp(220px, 32vw, 520px); }
+.livi-sketch img { width: 100%; border-top-left-radius: 28px; }
+@media (max-width: 860px) {
+  .livi-phone { align-self: center; width: min(60vw, 260px); }
+  .livi-sketch { width: 100%; }
+}
+
+/* Hidden from view, still read by screen readers. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- The Finals × You ----------
+   The Livi build with the game's screens: single shots, pairs side by side,
+   and the case's key lines set large. */
+.finals-shot {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.14);
+}
+.finals-shot--wide { width: min(100%, 1100px); margin-inline: auto; }
+/* A one-line statement set big and uppercase, as in the PDF, with the
+   key word heaviest. */
+.finals-motto {
+  max-width: 30em;
+  margin: 1.2em 0 0;
+  font-size: clamp(20px, 2.2vw, 34px);
+  font-weight: 600;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+.finals-motto strong { font-weight: 700; }
+/* A column of images inside a pair: a screen with a close-up below it.
+   The column is as tall as the image beside it, so both end on one line;
+   the close-up fills what's left, padded sideways in its own background. */
+.finals-col {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: clamp(16px, 2.5vw, 40px);
+}
+.finals-checkout {
+  flex: 1 1 0;
+  min-height: 0;
+  object-fit: contain;
+  background: #180102;
+}
+/* The annotated store on the page itself: no frame, no shadow. */
+.finals-annotated { display: block; width: min(100%, 1100px); margin-inline: auto; }
+.finals-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(16px, 2.5vw, 40px);
+}
+.swipe-dots { display: none; }
+.finals-tall { flex: 0 0 auto; width: clamp(200px, 28vw, 440px); }
+.finals-tall img { width: 100%; }
+/* A long screen in a frame you scroll inside, with a still shot below. */
+.finals-stack {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2vw, 28px);
+  width: clamp(260px, 34vw, 520px);
+  margin: 0;
+}
+.finals-scroll {
+  aspect-ratio: 5 / 4;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  background: #000;
+}
+.finals-scroll img { display: block; width: 100%; }
+.finals-stack figcaption {
+  margin-top: -6px;
+  font: 400 clamp(13px, 1vw, 16px)/1.2 var(--font-caslon);
+  color: var(--grey-text);
+}
+.finals-side { flex: 0 0 auto; width: clamp(260px, 42vw, 680px); }
+.finals-split--top { align-items: flex-start; }
+.finals-statement {
+  max-width: 34em;
+  margin: 0;
+  font-size: clamp(22px, 2.6vw, 42px);
+  font-weight: 400;
+  line-height: 1.2;
+}
+.finals-statement strong { font-weight: 700; }
+.finals-statement--small { margin-top: clamp(40px, 5vw, 80px); font-size: clamp(20px, 2vw, 32px); }
+.finals-interviews { margin-top: clamp(40px, 5vw, 80px); }
+.finals-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px clamp(32px, 5vw, 96px);
+  margin-top: clamp(20px, 2.5vw, 36px);
+}
+.finals-subtitle {
+  margin: 0;
+  font-size: clamp(16px, 1.45vw, 22px);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+@media (max-width: 860px) {
+  .finals-columns { grid-template-columns: minmax(0, 1fr); }
+  /* The pairs become a row you swipe through, edge to edge. */
+  .finals-pair {
+    --pair-pad: var(--gutter);
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--pair-pad);
+    scrollbar-width: none;
+    margin-inline: calc(-1 * var(--pair-pad));
+    padding: 4px var(--pair-pad) 28px;
+  }
+  .finals-pair::-webkit-scrollbar { display: none; }
+  .finals-pair > * { flex: 0 0 84%; scroll-snap-align: start; }
+  /* Sambla internship: low-, mid- and hi-fi the same way, one at a time. */
+  .intern-fidelity {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 4px var(--gutter) 28px;
+  }
+  .intern-fidelity::-webkit-scrollbar { display: none; }
+  .intern-fidelity > * { flex: 0 0 84%; margin: 0; scroll-snap-align: start; }
+  /* All three the same size: the hi-fi image's shape, the others cropped a little. */
+  .intern-fidelity img { aspect-ratio: 1800 / 1559; object-fit: cover; }
+  .swipe-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: -12px;
+  }
+  .swipe-dots button {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--text);
+    opacity: 0.2;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .swipe-dots button.is-active { opacity: 1; }
+  .finals-tall { align-self: center; width: min(70vw, 320px); }
+  .finals-stack { width: 100%; }
+  .finals-side { width: 100%; }
+}
+
+/* About page. */
+.case-facts dd a { color: inherit; text-decoration: none; }
+.case-facts dd a:hover { text-decoration: underline; }
+/* What I do: the skills as soft pills. */
+/* The pills fill an even block: every row runs edge to edge of the same
+   invisible frame, so the space between pills varies from row to row. */
+.about-skills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 60em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.about-skills li {
+  padding: 0.7em 1.3em;
+  border-radius: 999px;
+  background: var(--card-bg);
+  font-size: clamp(14px, 1.1vw, 18px);
+  font-weight: 500;
+}
+/* Phones fit only two or three pills a row, so a row could end with one
+   lone pill; there the pills widen instead to fill each row. */
+@media (max-width: 640px) {
+  .about-skills li { flex-grow: 1; text-align: center; }
+}
+/* Phones: the list folds to its first rows (set by the page script), the
+   last one fading out, with Show more under a black line. */
+.about-skills-box { position: relative; max-width: 60em; }
+.about-skills-box.is-collapsed {
+  max-height: var(--collapsed-h);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(#000 calc(100% - var(--fade-h)), transparent);
+  mask-image: linear-gradient(#000 calc(100% - var(--fade-h)), transparent);
+}
+.about-skills-more {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 0 0;
+  border: 0;
+  border-top: 1.5px solid #000;
+  background: none;
+  color: inherit;
+  font: 600 14px/1 var(--font-body);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.about-skills-more[hidden] { display: none; }
+/* Wider screens set the pills like justified text, with balanced lines:
+   the rows hold about as many pills each, and each row still runs edge to
+   edge of the frame. */
+@media (min-width: 641px) {
+  .about-skills {
+    display: block;
+    margin-right: -12px;
+    text-align: justify;
+    text-align-last: justify;
+    text-wrap: balance;
+  }
+  .about-skills li { display: inline-block; margin: 0 12px 12px 0; }
+}
+/* So far: one row per step, the label on the left in Caslon. */
+.about-path {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid #000;
+}
+.about-path li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 2fr);
+  gap: 8px clamp(16px, 3vw, 48px);
+  align-items: baseline;
+  position: relative;
+  padding: clamp(18px, 2vw, 28px) clamp(44px, 5vw, 80px) clamp(18px, 2vw, 28px) 0;
+  border-bottom: 1px solid #000;
+}
+/* Each row is one link to its project (the title's link stretched over the
+   row), with a chevron on the right that nudges forward on hover. */
+.about-path li::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  width: clamp(11px, 1vw, 16px);
+  height: clamp(11px, 1vw, 16px);
+  border-top: 2.5px solid #000;
+  border-right: 2.5px solid #000;
+  rotate: 45deg;
+  translate: 0 -50%;
+  transition: translate 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+.about-path li:hover::after { translate: 6px -50%; }
+.about-path-what a::after { content: ""; position: absolute; inset: 0; }
+.about-path p { margin: 0; }
+.about-path-when {
+  font: 400 clamp(15px, 1.4vw, 22px)/1.2 var(--font-caslon);
+  color: var(--grey-text);
+}
+.about-path-what {
+  font-size: clamp(17px, 1.6vw, 26px);
+  font-weight: 600;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+.about-path-what a { color: inherit; text-decoration: none; }
+.about-path li:hover .about-path-what a { text-decoration: underline; text-underline-offset: 0.12em; }
+.about-path-note {
+  font-size: clamp(14px, 1.1vw, 18px);
+  line-height: 1.3;
+}
+@media (max-width: 640px) {
+  .about-path li { grid-template-columns: minmax(0, 1fr); }
+}
+/* The portrait keeps the face in view however the frame is cropped. */
+.case-media--portrait img { object-position: 52% 35%; }
+/* The CV and Contact buttons side by side (stacked on phones). */
+.case-facts-row.about-ctas { gap: 12px; }
+
+/* Hodd: three phones in a stack. The front one sits in the middle and the
+   other two peek out behind it; swiping brings the next one to the front
+   (data-pos is set by the page script). */
+.hodd-stack { flex: 0 0 auto; width: clamp(260px, 34vw, 500px); margin: 0; }
+.hodd-stack-cards {
+  position: relative;
+  aspect-ratio: 500 / 650;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.hodd-stack-cards img {
+  position: absolute;
+  top: 3%;
+  left: 21%;
+  width: 58%;
+  height: auto;
+  cursor: pointer;
+  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.16));
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease;
+  -webkit-user-drag: none;
+}
+.hodd-stack-cards img[data-pos="0"] { z-index: 3; cursor: grab; }
+.hodd-stack-cards img[data-pos="1"] { z-index: 2; transform: translate(30%, -3%) scale(0.86); filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.12)) brightness(0.97); }
+.hodd-stack-cards img[data-pos="2"] { z-index: 1; transform: translate(-30%, -3%) scale(0.86); filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.12)) brightness(0.97); }
+.hodd-stack .swipe-dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+@media (min-width: 861px) {
+  .hodd-stack .swipe-dots button {
+    width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%;
+    background: var(--text); opacity: 0.2; cursor: pointer; transition: opacity 0.2s;
+  }
+  .hodd-stack .swipe-dots button.is-active { opacity: 1; }
+}
+@media (max-width: 860px) {
+  .hodd-stack { align-self: center; width: min(92vw, 420px); }
+  .hodd-stack .swipe-dots { margin-top: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hodd-stack-cards img { transition: none; }
+}
+
+/* About: my paintings and sculptures as a carousel beside the background
+   copy. One work at a time, filling the frame, with plain black arrows on
+   each side. */
+.about-works {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(280px, 36vw, 540px);
+}
+.about-works-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  border-top-left-radius: 28px;
+  background: var(--card-bg);
+}
+.about-works-track::-webkit-scrollbar { display: none; }
+.about-work {
+  flex: 0 0 100%;
+  aspect-ratio: 4 / 5;
+  scroll-snap-align: start;
+  margin: 0;
+}
+.sambla-chapter .about-work img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+.about-works .swipe-dots { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+.about-works .swipe-dots button {
+  width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%;
+  background: var(--text); opacity: 0.2; cursor: pointer; transition: opacity 0.2s;
+}
+.about-works .swipe-dots button.is-active { opacity: 1; }
+.about-works-arrow {
+  position: absolute;
+  top: calc(50% - 20px);
+  width: 32px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  translate: 0 -50%;
+  opacity: 0;
+  transition: opacity 0.25s, scale 0.2s;
+}
+/* The arrows show up only while the pointer is on the carousel. */
+.about-works:hover .about-works-arrow,
+.about-works-arrow:focus-visible { opacity: 1; }
+.about-works-arrow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 12px;
+  height: 12px;
+  border-top: 2.5px solid #000;
+  border-right: 2.5px solid #000;
+}
+.about-works-arrow--prev { left: 2px; }
+.about-works-arrow--prev::before { rotate: -135deg; translate: 2px 0; }
+.about-works-arrow--next { right: 2px; }
+.about-works-arrow--next::before { rotate: 45deg; translate: -2px 0; }
+.about-works-arrow:hover { scale: 1.08; }
+/* Phones and tablets swipe instead. */
+@media (hover: none), (max-width: 1024px) { .about-works-arrow { display: none; } }
+/* On computers the carousel runs out to the right edge of the window, like
+   the hero images. */
+@media (min-width: 861px) {
+  .about-works:not(.about-works--wide) {
+    width: calc(clamp(280px, 36vw, 540px) + clamp(var(--gutter), 7vw, 108px));
+    margin-right: calc(-1 * clamp(var(--gutter), 7vw, 108px));
+  }
+  .about-works:not(.about-works--wide) .swipe-dots { padding-right: clamp(var(--gutter), 7vw, 108px); }
+  /* Never taller than the screen under the header. */
+  .about-works:not(.about-works--wide) .about-work { max-height: calc(100svh - var(--header-h, 120px) - 96px); }
+}
+@media (max-width: 860px) {
+  .about-works { align-self: stretch; width: 100%; }
+}
+/* The same carousel for wide campaign images (Försvarsmakten): the whole
+   column wide, at the images' own shape, with white arrows over the dark
+   images. */
+.about-works--wide { width: min(100%, 1100px); }
+/* Copy that continues under a carousel or image. */
+.sambla-copy--after { margin-top: clamp(32px, 4.5vw, 72px); margin-bottom: 0; }
+.about-works--wide .about-work { aspect-ratio: 2000 / 1129; }
+.about-works--wide .about-works-arrow--prev { left: 10px; }
+.about-works--wide .about-works-arrow--next { right: 10px; }
+.about-works--wide .about-works-arrow::before {
+  border-color: #fff;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+}
+
+/* Försvarsmakten: a screen recording of the campaign site under My role. */
+.fm-site { margin: 0; }
+.fm-sites {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2vw, 32px);
+  align-items: start;
+}
+/* One shape for all three, so they line up; any difference shows as black. */
+.fm-sites video { aspect-ratio: 1280 / 668; object-fit: contain; }
+@media (max-width: 860px) {
+  .fm-sites { grid-template-columns: minmax(0, 1fr); gap: clamp(32px, 4.5vw, 72px); }
+}
+/* The recordings have no sound, so the volume controls are hidden. */
+.fm-site video::-webkit-media-controls-mute-button,
+.fm-site video::-webkit-media-controls-volume-slider,
+.fm-site video::-webkit-media-controls-volume-control-container { display: none; }
+.fm-site video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  background: #000;
+}
+.fm-site figcaption {
+  margin-top: 12px;
+  font: 400 clamp(15px, 1.4vw, 22px)/1.2 var(--font-caslon);
+  color: var(--grey-text);
+}
+/* The team photo beside the result. Not zoomable (data-no-zoom). */
+.fm-team { flex: 0 0 auto; width: clamp(240px, 30vw, 460px); margin: 0; }
+.fm-team img { width: 100%; border-top-left-radius: 28px; }
+@media (max-width: 860px) { .fm-team { width: min(100%, 420px); } }
+/* The subway poster beside The insight: landscape, so it gets more width. */
+.fm-poster { flex: 0 1 auto; width: clamp(300px, 44vw, 760px); margin: 0; }
+.fm-poster img { width: 100%; border-top-left-radius: 28px; }
+@media (max-width: 860px) { .fm-poster { width: 100%; } }
+/* Tablets keep the photo beside the text instead of under it. */
+@media (min-width: 641px) and (max-width: 860px) {
+  .intern-split--tablet-row { flex-direction: row; align-items: center; }
+  .intern-split--tablet-row .fm-team { width: 42vw; }
+}
+
+/* Project pages: slide in from the left (or the right, for things on the
+   right half) and fade in, once (reveal.js). */
+.reveal {
+  opacity: 0;
+  translate: -48px 0;
+  transition: opacity 0.7s ease, translate 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.reveal--right { translate: 48px 0; }
+.reveal.is-revealed { opacity: 1; translate: 0 0; }
+/* Försvarsmakten's logo, in black, beside the brief. */
+.fm-logo { flex: 0 0 auto; width: clamp(140px, 18vw, 280px); margin: 0 auto; }
+.fm-logo img { width: 100%; }
+@media (max-width: 860px) { .fm-logo { align-self: center; width: min(42vw, 180px); } }
+
+/* Apoteket, the problem: Livi's answer as a tilted green note with the
+   star, beside the copy. It straightens up when pointed at. */
+.livi-moment {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 12px;
+  width: clamp(220px, 22vw, 320px);
+  margin: 0 auto;
+  padding: clamp(20px, 2vw, 32px);
+  border-radius: 16px;
+  background: #56B75B;
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  rotate: -3deg;
+  transition: rotate 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.livi-moment:hover { rotate: 0deg; scale: 1.04; }
+.livi-moment img { width: 40px; height: auto; filter: brightness(0) invert(1); }
+.livi-moment-what {
+  font-size: clamp(22px, 2vw, 32px);
+  font-weight: 700;
+  line-height: 1.1;
+}
+@media (max-width: 860px) {
+  .livi-moment { align-self: center; width: min(80vw, 300px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .livi-moment { transition: none; }
+}
+
+/* Phones: headings two sizes smaller. */
+@media (max-width: 640px) {
+  .case-title { font-size: 32px; }
+  .sambla-title,
+  .film-title,
+  .challenge-title,
+  .research-title,
+  .concept-title,
+  .campaign-title,
+  .role-title,
+  .learning-title,
+  .next-up-title,
+  .contact-footer-title { font-size: 34px; }
+}

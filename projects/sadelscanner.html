@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hodd, SadelScanner – Mikaela Haage</title>
+  <meta name="description" content="SadelScanner – a project by Mikaela Haage.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Prompt:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+  <header class="project-header">
+    <nav class="project-nav" aria-label="Main menu">
+      <a href="../index.html">Home</a>
+      <a href="../about.html">About</a>
+      <a href="../index.html#projects">Projects</a>
+    </nav>
+    <a class="name" href="../index.html">Mikaela Haage</a>
+    <div class="project-current">
+      <p class="project-tagline"><span class="project-tagline-text">SadelScanner</span> <strong>Hodd</strong></p>
+      <a class="project-next" href="fjallraven.html" aria-label="Next project: Fjällräven">Next</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="case-intro" aria-labelledby="case-title">
+      <div class="case-text">
+        <p class="case-eyebrow">SadelScanner</p>
+        <h1 id="case-title" class="case-title">Hodd</h1>
+        <p class="case-lead">A horse diary that goes from gut feeling to overview. I designed Hodd, an app where riders log training, health, movement, routines and equipment in a few taps in the stable, and see the patterns before small problems become big ones.</p>
+        <dl class="case-facts">
+          <div><dt>Deliverables</dt><dd>UX/UI Design</dd></div>
+          <div><dt>Duration</dt><dd>4&nbsp;Months</dd></div>
+          <div><dt>Team</dt><dd>Team of 5,<br>Sole UX/UI Designer</dd></div>
+        </dl>
+      </div>
+      <figure class="case-media case-media--panel">
+        <img src="../img/sadelscanner/sadelscanner-app.webp" width="380" height="809" alt="The Hälsa screen in the Hodd app on a phone, with a health calendar and journal for the horse Dallas." fetchpriority="high">
+      </figure>
+    </section>
+
+    <div class="chapter">
+      <section class="sambla-chapter" aria-labelledby="brief-title">
+        <div class="sambla-copy">
+          <h2 id="brief-title" class="sambla-title">The brief</h2>
+          <p class="sambla-text">My task was to help the team behind Hodd with the UX and UI of their new app. They wanted me to start with the diary log, the heart of the app, where riders log how their horse is doing.</p>
+        </div>
+        <figure class="hodd-wide hodd-wide--strip">
+          <div class="hodd-scroll"><img src="../img/sadelscanner/diary-lofi.webp" width="2286" height="970" alt="Low-fi wireframes of the diary flow “Dagens logg” for the horse Dallas: Utevistelse, Motion/Aktivitet, Min upplevelse idag and Hur kändes hästen?, each a list of choices with Tillbaka and Nästa." loading="lazy"></div>
+          <figcaption>Low-fi diary flow</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <div class="chapter">
+      <section class="sambla-chapter" aria-labelledby="journey-title">
+        <div class="intern-split">
+          <div class="sambla-copy">
+            <h2 id="journey-title" class="sambla-title">Thinking like a user</h2>
+            <p class="sambla-text">I helped structure how a user would actually move through the app, and made it visual with a user journey. Seeing the whole journey in one place made it easier for us as a group to agree on what each step should give the rider, and what we wanted to get out of it.</p>
+            <p class="sambla-text">We then tested the flow on a few users and iterated on it based on what we saw.</p>
+          </div>
+          <!-- The diary log after testing, recorded from the Figma prototype.
+               Plays only when clicked. -->
+          <button type="button" class="hodd-proto" aria-label="Play a recording of the diary log">
+            <video src="../img/sadelscanner/diary-flow.mp4" poster="../img/sadelscanner/diary-flow-poster.webp" loop muted playsinline preload="none"></video>
+            <span class="film-play" aria-hidden="true"></span>
+          </button>
+        </div>
+        <figure class="hodd-wide hodd-wide--strip">
+          <div class="hodd-scroll"><img src="../img/sadelscanner/user-journey.webp" width="1964" height="662" alt="The user journey as a flow chart: from downloading SadelScanner and creating an account or logging in, to the home page with insights, the plan (calendar) and my stable, and from there through every step of logging a session, with its choices and skips, to saving and the insights at the end." loading="lazy"></div>
+          <figcaption>User journey</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <div class="chapter">
+      <section class="sambla-chapter" aria-labelledby="app-title">
+        <div class="intern-split">
+          <div class="sambla-copy">
+            <h2 id="app-title" class="sambla-title">The rest of the app</h2>
+            <p class="sambla-text">From the diary I moved on to the rest of the app: what the start page could look like, and the pages for health, competitions, the stable, training and the calendar.</p>
+            <p class="sambla-text">I also looked at how Hodd could connect to SadelScanner, the main company, which uses 3D scanning to help riders find a saddle that fits their horse.</p>
+          </div>
+          <!-- Three phones in a stack: swipe, or click one behind, to bring it to the front. -->
+          <figure class="hodd-stack" aria-roledescription="carousel" aria-label="Screens from Hodd">
+            <div class="hodd-stack-cards">
+              <img data-no-zoom src="../img/sadelscanner/phone-home.webp" width="467" height="995" alt="The start page “Hej Karin”: today’s plans, the horse Dallas, a movement result of 69 percent and a training overview." draggable="false" loading="lazy">
+              <img data-no-zoom src="../img/sadelscanner/phone-health.webp" width="467" height="995" alt="The Hälsa page for Dallas: days left on sick leave, a health calendar, today’s events and the journal." draggable="false" loading="lazy">
+              <img data-no-zoom src="../img/sadelscanner/phone-training.webp" width="467" height="995" alt="The Träning page: a contact list, a training calendar with today’s lessons, homework, and goals and challenges for Dallas." draggable="false" loading="lazy">
+            </div>
+          </figure>
+        </div>
+        <figure class="hodd-wide hodd-wide--board">
+          <img src="../img/sadelscanner/app-board.webp" width="2153" height="1978" alt="The Figma board for the whole app: the diary flow, health, competitions, the stable, training and the calendar, with the colour palette of beige, sage green and dark green in the middle." loading="lazy">
+          <figcaption>The whole app in Figma</figcaption>
+        </figure>
+      </section>
+    </div>
+
+    <div class="chapter">
+      <section class="sambla-chapter" aria-labelledby="start-title">
+        <div class="intern-split">
+          <div class="sambla-copy">
+            <h2 id="start-title" class="sambla-title">Iteration</h2>
+            <p class="sambla-text">The whole project has been one long iteration, and the work on Hodd still goes on: finding the best way to give you an overview of your horse’s health. The start page shows it well. It went from a grid of cards with today’s plans, to a longer overview with mood trends and bookings, to a large photo of the horse at the top.</p>
+          </div>
+          <figure class="hodd-iterations"><img src="../img/sadelscanner/home-iterations.webp" width="1455" height="1602" alt="Three versions of Hodd’s start page “Hej Karin”: a grid of cards, a longer scrolling overview, and one with a large photo of the white horse Dallas at the top." loading="lazy"></figure>
+        </div>
+      </section>
+    </div>
+
+    <div class="chapter">
+      <section class="sambla-chapter" aria-labelledby="learning-title">
+        <div class="sambla-copy">
+          <h2 id="learning-title" class="sambla-title">Key learning</h2>
+          <p class="sambla-text">This was one of my first paid projects, and working with a team for real taught me a lot. My own opinion doesn’t weigh nearly as much as what the people testing the app think. Still, gut feeling is an important part of the job too.</p>
+          <p class="sambla-text">Clear communication matters more than I expected. We all saw things differently, and we learned a lot from each other. When everyone feels comfortable questioning things, the project moves forward much faster.</p>
+          <p class="sambla-text">Most of all, I learned that I’m actually good at what I do, and that I can find confidence in it.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="chapter">
+      <section class="sambla-chapter" aria-labelledby="patent-title">
+        <div class="intern-split">
+          <div class="sambla-copy">
+            <h2 id="patent-title" class="sambla-title">Also for Sadelscanner</h2>
+            <p class="sambla-text">Outside of Hodd, I also worked with Sadelscanner, the company behind it. I visualized their user manual and made the patent drawings for their product, the insert that goes into the saddle.</p>
+          </div>
+          <!-- One drawing at a time: swipe, click it or use the dots to see the other. -->
+          <figure class="sadel-drawings" aria-roledescription="carousel" aria-label="Patent drawings">
+            <div class="sadel-slides">
+            <img data-no-zoom src="../img/sadelscanner/patent-exploded.webp" width="596" height="900" alt="Patent drawing in black ink: a saddle taken apart, with the inserts floating between the seat and the panels." loading="lazy">
+            <img src="../img/sadelscanner/patent-insert.webp" width="900" height="561" alt="Patent drawing in black ink: the underside of a saddle, with arrows showing where the inserts go." loading="lazy" data-no-zoom>
+            </div>
+          </figure>
+        </div>
+      </section>
+    </div>
+
+    <!-- Last screen: next project on white, contact on black. -->
+    <a class="next-up" href="fjallraven.html" aria-label="Next project: Fjällräven">
+      <span class="next-up-title">Next project</span>
+      <img class="next-up-sticker" src="../img/fjallraven/stickers/wool-socks.png" width="160" height="220" alt="" loading="lazy">
+    </a>
+  </main>
+
+  <footer id="contact" class="contact-footer" aria-labelledby="contact-footer-title">
+    <h2 id="contact-footer-title" class="contact-footer-title">Let’s work together</h2>
+    <div class="contact-footer-columns">
+      <div class="contact-footer-contact">
+        <p class="contact-footer-label">Contact</p>
+        <ul class="contact-footer-links">
+          <li><a href="mailto:mikaelahaage@gmail.com">Mikaelahaage@gmail.com</a></li>
+          <!-- TODO: add the real profile URLs. -->
+          <li><a href="https://www.instagram.com/egaah/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.instagram.com/asomialfabetet/" target="_blank" rel="noopener">Instagram, A som i alfabetet</a></li>
+          <li><a href="https://www.linkedin.com/in/mikaela-haage-33284964" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+      <nav class="site-map" aria-labelledby="site-map-title">
+        <p id="site-map-title" class="contact-footer-label">Site map</p>
+        <ul class="contact-footer-links">
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../projects/alfabetet.html">A som i alfabetet</a></li>
+          <li><a href="../index.html#projects">Projects</a></li>
+          <li><a href="mailto:mikaelahaage@gmail.com">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    // Expose the sticky header's height so the intro can fill the first screen.
+    const header = document.querySelector(".project-header");
+    new ResizeObserver(() => {
+      document.documentElement.style.setProperty("--header-h", header.offsetHeight + "px");
+    }).observe(header);
+
+    // Once the page scrolls the header gets its faded background. It slides
+    // away while scrolling down and returns when scrolling up (or on hover,
+    // see .project-header.is-hidden in the CSS).
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      const y = window.scrollY;
+      header.classList.toggle("is-scrolled", y > 4);
+      if (y > lastY + 4 && y > header.offsetHeight) header.classList.add("is-hidden");
+      else if (y < lastY - 4) header.classList.remove("is-hidden");
+      lastY = y;
+      ticking = false;
+    };
+    window.addEventListener("scroll", () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+    }, { passive: true });
+    onScroll();
+
+    // The phone stack: swipe sideways (or click a phone behind, or a dot) to
+    // bring the next phone to the front. Each phone gets its place from
+    // data-pos: 0 in front, 1 behind on the right, 2 behind on the left.
+    document.querySelectorAll(".hodd-stack").forEach((stack) => {
+      const cards = [...stack.querySelectorAll(".hodd-stack-cards img")];
+      const dots = document.createElement("div");
+      dots.className = "swipe-dots";
+      const buttons = cards.map((card, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("aria-label", `Show screen ${i + 1} of ${cards.length}`);
+        b.addEventListener("click", () => show(i));
+        dots.append(b);
+        return b;
+      });
+      stack.append(dots);
+      let front = 0;
+      const show = (i) => {
+        front = (i + cards.length) % cards.length;
+        cards.forEach((card, j) => {
+          card.dataset.pos = (j - front + cards.length) % cards.length;
+          card.setAttribute("aria-hidden", j === front ? "false" : "true");
+        });
+        buttons.forEach((b, j) => b.classList.toggle("is-active", j === front));
+      };
+      show(0);
+
+      let startX = null, startY = 0, swiped = false;
+      stack.addEventListener("pointerdown", (e) => {
+        startX = e.clientX; startY = e.clientY; swiped = false;
+      });
+      stack.addEventListener("pointerup", (e) => {
+        if (startX === null) return;
+        const dx = e.clientX - startX, dy = e.clientY - startY;
+        startX = null;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+          swiped = true;
+          show(front + (dx < 0 ? 1 : -1));
+        }
+      });
+      stack.addEventListener("pointercancel", () => { startX = null; });
+      cards.forEach((card, j) => card.addEventListener("click", () => {
+        if (!swiped && j !== front) show(j);
+      }));
+    });
+
+    // The patent drawings: one at a time, with dots under them. Swipe
+    // sideways, click the drawing or a dot to switch.
+    document.querySelectorAll(".sadel-drawings").forEach((box) => {
+      const slides = [...box.querySelectorAll(".sadel-slides img")];
+      const dots = document.createElement("div");
+      dots.className = "swipe-dots";
+      const buttons = slides.map((_, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("aria-label", `Show drawing ${i + 1} of ${slides.length}`);
+        b.addEventListener("click", () => show(i));
+        dots.append(b);
+        return b;
+      });
+      box.append(dots);
+      let current = 0;
+      const show = (i) => {
+        current = (i + slides.length) % slides.length;
+        slides.forEach((img, j) => {
+          img.classList.toggle("is-active", j === current);
+          img.setAttribute("aria-hidden", j === current ? "false" : "true");
+        });
+        buttons.forEach((b, j) => b.classList.toggle("is-active", j === current));
+      };
+      show(0);
+
+      let startX = null, startY = 0, swiped = false;
+      box.addEventListener("pointerdown", (e) => {
+        startX = e.clientX; startY = e.clientY; swiped = false;
+      });
+      box.addEventListener("pointerup", (e) => {
+        if (startX === null) return;
+        const dx = e.clientX - startX, dy = e.clientY - startY;
+        startX = null;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+          swiped = true;
+          show(current + (dx < 0 ? 1 : -1));
+        }
+      });
+      box.addEventListener("pointercancel", () => { startX = null; });
+      slides.forEach((img) => img.addEventListener("click", () => {
+        if (!swiped) show(current + 1);
+      }));
+    });
+
+    // The diary log recording plays and pauses on click.
+    document.querySelectorAll(".hodd-proto").forEach((phone) => {
+      const video = phone.querySelector("video");
+      phone.addEventListener("click", () => {
+        if (video.paused) video.play();
+        else video.pause();
+      });
+      video.addEventListener("play", () => {
+        phone.classList.add("is-playing");
+        phone.setAttribute("aria-label", "Pause the recording");
+      });
+      video.addEventListener("pause", () => {
+        phone.classList.remove("is-playing");
+        phone.setAttribute("aria-label", "Play a recording of the diary log");
+      });
+    });
+  </script>
+  <script src="lightbox.js"></script>
+  <script src="stickers.js"></script>
+  <script src="parallax.js"></script>
+  <script src="reveal.js"></script>
+</body>
+</html>

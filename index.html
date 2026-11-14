@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mikaela Haage – UXUI Designer &amp; Product Designer</title>
+  <meta name="description" content="Portfolio of Mikaela Haage, UXUI Designer and Product Designer.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Prompt:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    // Intro: start hidden before first paint. Skipped for reduced motion, deep links,
+    // and when arriving from another page on the site (the page transition runs instead).
+    // A reload keeps the original referrer, so it counts as a fresh visit.
+    const navType = (performance.getEntriesByType("navigation")[0] || {}).type;
+    const fromSite = navType !== "reload" && document.referrer.startsWith(location.origin + "/");
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches && !location.hash && !fromSite) {
+      history.scrollRestoration = "manual";
+      document.documentElement.classList.add("intro");
+    }
+  </script>
+</head>
+<body>
+
+  <header class="site-header">
+    <h1 class="name">Mikaela Haage</h1>
+    <p class="role">UXUI Designer<span class="role-dot" aria-hidden="true"></span>Product Designer</p>
+    <div class="rule" role="presentation"></div>
+    <nav class="nav" aria-label="Main menu">
+      <a href="about.html">About</a>
+      <a href="projects/alfabetet.html">A som i alfabetet</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Card wall: JS fills .wall-track with two identical sets of columns. -->
+    <section id="projects" class="wall" aria-label="Projects">
+      <div class="wall-track" id="wall-track"></div>
+    </section>
+
+  </main>
+
+  <!-- Same contact footer as the project pages, mirrored: heading and a site
+       map (the header's links) on the left, contact on the right. -->
+  <footer id="contact" class="contact-footer contact-footer--home" aria-labelledby="contact-footer-title">
+    <h2 id="contact-footer-title" class="contact-footer-title">Let’s work together</h2>
+    <div class="contact-footer-columns">
+      <div class="contact-footer-contact">
+        <p class="contact-footer-label">Contact</p>
+        <ul class="contact-footer-links">
+          <li><a href="mailto:mikaelahaage@gmail.com">Mikaelahaage@gmail.com</a></li>
+          <!-- TODO: add the real profile URLs. -->
+          <li><a href="https://www.instagram.com/egaah/" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="https://www.instagram.com/asomialfabetet/" target="_blank" rel="noopener">Instagram, A som i alfabetet</a></li>
+          <li><a href="https://www.linkedin.com/in/mikaela-haage-33284964" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+      <nav class="site-map" aria-labelledby="site-map-title">
+        <p id="site-map-title" class="contact-footer-label">Site map</p>
+        <ul class="contact-footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="projects/alfabetet.html">A som i alfabetet</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="mailto:mikaelahaage@gmail.com">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
