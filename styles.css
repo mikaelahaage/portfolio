@@ -229,12 +229,10 @@ a.name {
 
 /* Projects view: the compact header and a page title, as on About, in
    place of the start page's big header. */
-.projects-header,
-.projects-intro { display: none; }
+/* :root:not() outweighs .project-header's own display: grid further down. */
+:root:not(.list-view) :is(.projects-header, .projects-intro),
 .list-view .site-header { display: none; }
-.list-view .projects-header { display: grid; }
-.list-view .projects-intro {
-  display: block;
+.projects-intro {
   padding: clamp(24px, 4vw, 64px) clamp(var(--gutter), 4vw, 64px) clamp(8px, 1.5vw, 24px);
 }
 
