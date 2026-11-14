@@ -57,11 +57,12 @@ body {
   line-height: 1.1;
   view-transition-name: site-name;
 }
-a.name {
-  display: block;
+a.name,
+.name a {
   color: inherit;
   text-decoration: none;
 }
+a.name { display: block; }
 
 /* ---------- Page transition ----------
    Moving between pages, the name glides from the big centered header to the
@@ -276,6 +277,9 @@ a.name {
 .list-card-text {
   display: grid;
   gap: 0.4em;
+  /* min-width lets the text shrink beside the image, so long names wrap
+     (hyphenated, see lang="sv" in main.js) instead of running off the card. */
+  min-width: 0;
   max-width: 34em;
   text-transform: none;
 }
@@ -284,6 +288,8 @@ a.name {
   font-weight: 600;
   line-height: 1;
   text-transform: uppercase;
+  hyphens: auto;
+  overflow-wrap: break-word;
 }
 .list-card-sub {
   font-size: clamp(11px, 0.95vw, 15px);

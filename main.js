@@ -214,6 +214,7 @@ function buildList() {
     text.className = "list-card-text";
     const title = document.createElement("span");
     title.className = "list-card-title";
+    title.lang = "sv"; // project names are Swedish: hyphenate them as Swedish
     title.textContent = project.title;
     const sub = document.createElement("span");
     sub.className = "list-card-sub";
