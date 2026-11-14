@@ -26,9 +26,6 @@
     // A reload keeps the original referrer, so it counts as a fresh visit.
     const navType = (performance.getEntriesByType("navigation")[0] || {}).type;
     const fromSite = navType !== "reload" && document.referrer.startsWith(location.origin + "/");
-    // The Projects view has the project pages' compact header; set it before
-    // the first paint so the big header never flashes.
-    if (location.hash === "#projects") document.documentElement.classList.add("list-view");
     if (!matchMedia("(prefers-reduced-motion: reduce)").matches && !location.hash && !fromSite) {
       history.scrollRestoration = "manual";
       document.documentElement.classList.add("intro");
@@ -49,21 +46,7 @@
     </nav>
   </header>
 
-  <!-- The Projects view's header, like About's and the project pages'. -->
-  <header class="project-header project-header--plain projects-header">
-    <nav class="project-nav" aria-label="Main menu">
-      <a href="./">Home</a>
-      <a href="about">About</a>
-      <a href="#projects" aria-current="page">Projects</a>
-    </nav>
-    <a class="name" href="./">Mikaela Haage</a>
-  </header>
-
   <main>
-    <div class="projects-intro">
-      <p class="case-eyebrow">Projects</p>
-      <h1 class="case-title">Selected work</h1>
-    </div>
     <!-- Card wall: JS fills .wall-track with two identical sets of columns. -->
     <section id="projects" class="wall" aria-label="Projects">
       <div class="wall-track" id="wall-track"></div>

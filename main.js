@@ -120,7 +120,6 @@ const listView = () => location.hash === "#projects";
 function buildWall() {
   // The wall's distance from the top of the page lets the CSS size the cards
   // so both rows fit on the first screen.
-  document.documentElement.classList.toggle("list-view", listView());
   wall.style.setProperty("--wall-top", wall.getBoundingClientRect().top + window.scrollY + "px");
   wall.classList.toggle("is-list", listView());
   if (listView()) {
@@ -627,23 +626,3 @@ async function runIntro() {
 }
 
 runIntro();
-
-/* ---------- Projects view header ---------- */
-
-// Like the project pages' header: it slides away while scrolling down and
-// returns when scrolling up (or on hover, see .project-header.is-hidden).
-{
-  const header = document.querySelector(".projects-header");
-  let lastY = window.scrollY;
-  let ticking = false;
-  const onScroll = () => {
-    const y = window.scrollY;
-    if (y > lastY + 4 && y > header.offsetHeight) header.classList.add("is-hidden");
-    else if (y < lastY - 4) header.classList.remove("is-hidden");
-    lastY = y;
-    ticking = false;
-  };
-  window.addEventListener("scroll", () => {
-    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
-  }, { passive: true });
-}

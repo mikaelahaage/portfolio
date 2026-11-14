@@ -227,15 +227,6 @@ a.name {
   width: max-content;
 }
 
-/* Projects view: the compact header and a page title, as on About, in
-   place of the start page's big header. */
-/* :root:not() outweighs .project-header's own display: grid further down. */
-:root:not(.list-view) :is(.projects-header, .projects-intro),
-.list-view .site-header { display: none; }
-.projects-intro {
-  padding: clamp(24px, 4vw, 64px) clamp(var(--gutter), 4vw, 64px) clamp(8px, 1.5vw, 24px);
-}
-
 /* Projects view (main.js): a still list, one wide card per project. The
    image fills the card's left part, cropped at the top and bottom where it
    doesn't fit; title, subtitle and description beside it. */
