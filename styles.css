@@ -706,6 +706,7 @@ a.card--bleed:hover img { translate: none; }
   to { transform: none; }
 }
 .project-header .name { view-transition-name: none; }
+.header-stays .project-header { animation: none; }
 @media (prefers-reduced-motion: no-preference) {
   .project-header { animation: header-roll-down 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 }

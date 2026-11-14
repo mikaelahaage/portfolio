@@ -24,6 +24,19 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Prompt:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="styles.css">
   <script>
+    // The compact header rolls down only when it first appears. Coming from
+    // another page that showed it too, it stays put.
+    try {
+      if (document.referrer.startsWith(location.origin + "/") && sessionStorage.getItem("compact-header") === "1") {
+        document.documentElement.classList.add("header-stays");
+      }
+      addEventListener("pagehide", () => {
+        const header = document.querySelector(".project-header");
+        sessionStorage.setItem("compact-header", header && header.offsetParent ? "1" : "0");
+      });
+    } catch (e) {}
+  </script>
+  <script>
     // Intro: start hidden before first paint. Skipped for reduced motion, deep links,
     // and when arriving from another page on the site (the page transition runs instead).
     // A reload keeps the original referrer, so it counts as a fresh visit.
