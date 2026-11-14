@@ -34,6 +34,14 @@
         const header = document.querySelector(".project-header");
         sessionStorage.setItem("compact-header", header && header.offsetParent ? "1" : "0");
       });
+      // Leaving for another page: the header shows at once (even if it had
+      // slid away while scrolling), so the page change can keep it in place.
+      addEventListener("pageswap", () => {
+        const header = document.querySelector(".project-header");
+        if (!header) return;
+        header.style.transition = "none";
+        header.classList.remove("is-hidden");
+      });
     } catch (e) {}
   </script>
 </head>

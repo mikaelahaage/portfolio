@@ -707,6 +707,9 @@ a.card--bleed:hover img { translate: none; }
 }
 .project-header .name { view-transition-name: none; }
 .header-stays .project-header { animation: none; }
+/* Between pages that both have it, the compact header stays put while the
+   rest cross-fades (only its text, like the project name, fades over). */
+.project-header { view-transition-name: compact-header; }
 @media (prefers-reduced-motion: no-preference) {
   .project-header { animation: header-roll-down 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 }
