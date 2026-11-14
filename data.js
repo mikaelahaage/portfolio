@@ -27,7 +27,7 @@ const PROJECTS = [
   {
     title: "Fjällräven",
     subtitle: "Berghs, Explore",
-    href: "projects/fjallraven.html",
+    href: "projects/fjallraven",
     img: { src: "img/fjallraven/fjallraven-poster.webp", w: 403, h: 581 },
     framed: true,
     blurb: "A student project at Berghs SOC, 2025. We helped Fjällräven take on civil defence and emergency preparedness for young people living alone, through products, graphics and a campaign.",
@@ -42,7 +42,7 @@ const PROJECTS = [
   {
     title: "Sambla",
     subtitle: "Internship",
-    href: "projects/sambla-intern.html",
+    href: "projects/sambla-intern",
     img: { src: "img/sambla/sambla-monkey.webp", w: 634, h: 571 },
     // Sambla's loop behind the expanded preview.
     previewLoop: "img/sambla/case/loop.webp",
@@ -51,7 +51,7 @@ const PROJECTS = [
   {
     title: "Fjällräven",
     subtitle: "Berghs, Explore",
-    href: "projects/fjallraven.html",
+    href: "projects/fjallraven",
     img: { src: "img/fjallraven/stickers/jacket-straight.webp", w: 400, h: 552 },
     blurb: "A student project at Berghs SOC, 2025. We helped Fjällräven take on civil defence and emergency preparedness for young people living alone, through products, graphics and a campaign.",
     previewStickers: [
@@ -62,7 +62,7 @@ const PROJECTS = [
   {
     title: "The Finals",
     subtitle: "XYOU, Berghs",
-    href: "projects/thefinals.html",
+    href: "projects/thefinals",
     img: { src: "img/thefinals/card-cart.webp", w: 550, h: 846 },
     framed: true,
     blurb: "Exploring how UX principles from fashion and retail can improve store and customization flows in THE FINALS.",
@@ -70,14 +70,14 @@ const PROJECTS = [
   {
     title: "The Finals",
     subtitle: "XYOU, Berghs",
-    href: "projects/thefinals.html",
+    href: "projects/thefinals",
     img: { src: "img/thefinals/thefinals-site.webp", w: 345, h: 295 },
     blurb: "Exploring how UX principles from fashion and retail can improve store and customization flows in THE FINALS.",
   },
   {
     title: "Sambla",
     subtitle: "Internship",
-    href: "projects/sambla-intern.html",
+    href: "projects/sambla-intern",
     img: { src: "img/sambla-intern/card-phones.webp", w: 785, h: 1130 },
     phone: true,
     framed: true,
@@ -90,7 +90,7 @@ const PROJECTS = [
   {
     title: "A som i alfabetet",
     subtitle: "Illustration",
-    href: "projects/alfabetet.html",
+    href: "projects/alfabetet",
     img: { src: "img/alfabetet/poster-card.webp", w: 720, h: 1018 },
     framed: true,
     blurb: "A personal print series where every letter comes with its own animal and plant, as single initial prints or the full alphabet as a poster.",
@@ -98,7 +98,7 @@ const PROJECTS = [
   {
     title: "Apoteket Hjärtat",
     subtitle: "Livi",
-    href: "projects/apoteket.html",
+    href: "projects/apoteket",
     img: { src: "img/apoteket/card-phones.webp", w: 800, h: 999 },
     phone: true,
     framed: true,
@@ -107,7 +107,7 @@ const PROJECTS = [
   {
     title: "Försvarsmakten",
     subtitle: "För kung och fosterlan",
-    href: "projects/forsvarsmakten.html",
+    href: "projects/forsvarsmakten",
     img: { src: "img/forsvarsmakten/forsvarsmakten-site.webp", w: 494, h: 539 },
     framed: true,
     blurb: "Our degree project for Försvarsmakten: the world’s first gaming army, a digital reserve force on Discord. I took part in the research and designed the campaign site and the Discord server.",
@@ -115,7 +115,7 @@ const PROJECTS = [
   {
     title: "SadelScanner",
     subtitle: "UX/UI design",
-    href: "projects/sadelscanner.html",
+    href: "projects/sadelscanner",
     img: { src: "img/sadelscanner/sadelscanner-duo.webp", w: 760, h: 1110 },
     phone: true,
     framed: true,
@@ -126,7 +126,7 @@ const PROJECTS = [
   {
     title: "Apoteket Hjärtat",
     subtitle: "Livi",
-    href: "projects/apoteket.html",
+    href: "projects/apoteket",
     img: { src: "img/apoteket/phone-livi.webp", w: 805, h: 1632 },
     phone: true,
     blurb: "Livi, an AI-assisted refill subscription in Apoteket Hjärtat’s app that plans ahead of your needs. A two-week course project in innovation, UX and UI.",
@@ -134,7 +134,7 @@ const PROJECTS = [
   {
     title: "SadelScanner",
     subtitle: "UX/UI design",
-    href: "projects/sadelscanner.html",
+    href: "projects/sadelscanner",
     img: { src: "img/sadelscanner/sadelscanner-app.webp", w: 380, h: 809 },
     phone: true,
     framed: true,
@@ -143,7 +143,7 @@ const PROJECTS = [
   {
     title: "A som i alfabetet",
     subtitle: "Illustration",
-    href: "projects/alfabetet.html",
+    href: "projects/alfabetet",
     img: { src: "img/alfabetet/c-sticker.webp", w: 749, h: 730 },
     // Drawn on white: multiplied so the white takes the card's colour.
     multiply: true,
@@ -155,7 +155,7 @@ const PROJECTS = [
   ].map((img) => ({
     title: "Sambla",
     subtitle: "Illustrations",
-    href: "projects/sambla.html",
+    href: "projects/sambla",
     img,
     previewLoop: "img/sambla/case/loop.webp",
     blurb: "Contributed to Sambla’s rebranding project, developing a new hand-drawn illustration style for the platform and app.",
@@ -167,17 +167,17 @@ const PROJECTS = [
 // `top` instead shows the image from its top edge, with a little room above.
 // `fit` shows the whole image inside the card (for tall illustrations).
 const PROJECT_LIST = [
-  { href: "projects/sambla.html", img: "img/sambla/sambla-05.webp", fit: true },
-  { href: "projects/forsvarsmakten.html", img: "img/forsvarsmakten/forsvarsmakten-site.webp", top: true },
-  { href: "projects/thefinals.html", img: "img/thefinals/thefinals-site.webp", focus: 0.38 },
-  { href: "projects/apoteket.html", img: "img/apoteket/phone-livi.webp" },
-  { href: "projects/fjallraven.html", img: "img/fjallraven/fjallraven-poster.webp", top: true },
-  { href: "projects/sambla-intern.html", img: "img/sambla/sambla-monkey.webp" },
-  { href: "projects/alfabetet.html", img: "img/alfabetet/poster-card.webp", top: true },
-  { href: "projects/sadelscanner.html", img: "img/sadelscanner/sadelscanner-app.webp" },
+  { href: "projects/sambla", img: "img/sambla/sambla-05.webp", fit: true },
+  { href: "projects/forsvarsmakten", img: "img/forsvarsmakten/forsvarsmakten-site.webp", top: true },
+  { href: "projects/thefinals", img: "img/thefinals/thefinals-site.webp", focus: 0.38 },
+  { href: "projects/apoteket", img: "img/apoteket/phone-livi.webp" },
+  { href: "projects/fjallraven", img: "img/fjallraven/fjallraven-poster.webp", top: true },
+  { href: "projects/sambla-intern", img: "img/sambla/sambla-monkey.webp" },
+  { href: "projects/alfabetet", img: "img/alfabetet/poster-card.webp", top: true },
+  { href: "projects/sadelscanner", img: "img/sadelscanner/sadelscanner-app.webp" },
 ];
 // The untitled illustration cards belong to this project.
-const ILLUSTRATION_HREF = "projects/sambla.html";
+const ILLUSTRATION_HREF = "projects/sambla";
 
 // Small versions of the wall's images (about 400px wide), so the wall loads
 // fast; the cards pick them through srcset. The preview keeps the full

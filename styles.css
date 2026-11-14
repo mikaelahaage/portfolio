@@ -197,7 +197,7 @@ a.name {
 .nav a:hover { border-bottom-color: var(--text); }
 /* Narrow phones, where the four links no longer fit on one line: A som i
    alfabetet on its own line, after the other links. */
-@media (max-width: 509px) { .nav a[href$="alfabetet.html"] { order: 1; } }
+@media (max-width: 509px) { .nav a[href$="alfabetet"] { order: 1; } }
 
 /* ---------- Anchors (placeholder sections) ---------- */
 
