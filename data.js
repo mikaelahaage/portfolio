@@ -71,7 +71,7 @@ const PROJECTS = [
     title: "The Finals",
     subtitle: "XYOU, Berghs",
     href: "projects/thefinals",
-    img: { src: "img/thefinals/thefinals-site.webp", w: 345, h: 295 },
+    img: { src: "img/thefinals/thefinals-site.webp", w: 1000, h: 899 },
     blurb: "Exploring how UX principles from fashion and retail can improve store and customization flows in THE FINALS.",
   },
   {
@@ -108,18 +108,18 @@ const PROJECTS = [
     title: "Försvarsmakten",
     subtitle: "För kung och fosterlan",
     href: "projects/forsvarsmakten",
-    img: { src: "img/forsvarsmakten/forsvarsmakten-site.webp", w: 494, h: 539 },
+    img: { src: "img/forsvarsmakten/forsvarsmakten-site.webp", w: 911, h: 994 },
     framed: true,
     blurb: "Our degree project for Försvarsmakten: the world’s first gaming army, a digital reserve force on Discord. I took part in the research and designed the campaign site and the Discord server.",
   },
   {
-    title: "SadelScanner",
+    title: "SaddleScanner",
     subtitle: "UX/UI design",
     href: "projects/sadelscanner",
     img: { src: "img/sadelscanner/sadelscanner-duo.webp", w: 760, h: 1110 },
     phone: true,
     framed: true,
-    blurb: "UX/UI design for SadelScanner’s Hodd, an app for keeping track of your horse’s health, care and journal.",
+    blurb: "UX/UI design for SaddleScanner’s Hodd, an app for keeping track of your horse’s health, care and journal.",
   },
   // More cards for the same projects. They take turns with the ones above,
   // so phones (where every project is always on the wall) get more swaps.
@@ -132,13 +132,13 @@ const PROJECTS = [
     blurb: "Livi, an AI-assisted refill subscription in Apoteket Hjärtat’s app that plans ahead of your needs. A two-week course project in innovation, UX and UI.",
   },
   {
-    title: "SadelScanner",
+    title: "SaddleScanner",
     subtitle: "UX/UI design",
     href: "projects/sadelscanner",
     img: { src: "img/sadelscanner/sadelscanner-app.webp", w: 380, h: 809 },
     phone: true,
     framed: true,
-    blurb: "UX/UI design for SadelScanner’s Hodd, an app for keeping track of your horse’s health, care and journal.",
+    blurb: "UX/UI design for SaddleScanner’s Hodd, an app for keeping track of your horse’s health, care and journal.",
   },
   {
     title: "A som i alfabetet",
@@ -204,5 +204,5 @@ const THUMBS = {
   "img/sambla/sambla-17.webp": ["img/thumbs/sambla/sambla-17.webp", 400],
   "img/sambla/sambla-19.webp": ["img/thumbs/sambla/sambla-19.webp", 400],
   "img/thefinals/card-cart.webp": ["img/thumbs/thefinals/card-cart.webp", 400],
-  "img/thefinals/thefinals-site.webp": ["img/thumbs/thefinals/thefinals-site.webp", 345],
+  "img/thefinals/thefinals-site.webp": ["img/thumbs/thefinals/thefinals-site.webp", 400],
 };
